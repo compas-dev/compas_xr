@@ -1,6 +1,6 @@
 # COMPAS XR
 
-[![Github Actions Build Status](https://github.com/gramaziokohler/compas_xr/workflows/build/badge.svg)](https://github.com/gramaziokohler/compas_xr/actions)
+[![Github Actions Build Status](https://github.com/compas-dev/compas_xr/workflows/build/badge.svg)](https://github.com/compas-dev/compas_xr/actions)
 [![License](https://img.shields.io/github/license/gramaziokohler/compas_xr.svg)](https://pypi.python.org/pypi/compas_xr)
 [![pip downloads](https://img.shields.io/pypi/dm/compas_xr)](https://pypi.python.org/project/compas_xr)
 [![PyPI Package latest release](https://img.shields.io/pypi/v/compas_xr.svg)](https://pypi.python.org/pypi/compas_xr)
@@ -28,9 +28,9 @@ python -m compas_rhino.install
 
 ## First Steps
 
-* [Documentation](https://gramaziokohler.github.io/compas_xr/)
-* [User guide](https://gramaziokohler.github.io/compas_xr/latest/userguide.html)
-* [API Reference](https://gramaziokohler.github.io/compas_xr/latest/api.html)
+* [Documentation](https://compas.dev/compas_xr/)
+* [User guide](https://compas.dev/compas_xr/latest/userguide.html)
+* [API Reference](https://compas.dev/compas_xr/latest/api.html)
 
 ## Questions and feedback
 
@@ -39,15 +39,15 @@ for questions and discussions.
 
 ## Issue tracker
 
-If you found an issue or have a suggestion for a dandy new feature, please file a new issue in our [issue tracker](https://github.com/gramaziokohler/compas_xr/issues).
+If you found an issue or have a suggestion for a dandy new feature, please file a new issue in our [issue tracker](https://github.com/compas-dev/compas_xr/issues).
 
 ## Contributing
 
 We love contributions!
 
-Check the [Contributor's Guide](https://github.com/gramaziokohler/compas_xr/blob/main/CONTRIBUTING.md)
+Check the [Contributor's Guide](https://github.com/compas-dev/compas_xr/blob/main/CONTRIBUTING.md)
 for more details.
 
 ## Credits
 
-`compas_xr` is currently developed by ETH Zurich (Gramazio Kohler Research) and Princeton University. See the [list of authors](https://github.com/gramaziokohler/compas_xr/blob/main/AUTHORS.md) for a complete overview.
+`compas_xr` is currently developed by ETH Zurich (Gramazio Kohler Research) and Princeton University. See the [list of authors](https://github.com/compas-dev/compas_xr/blob/main/AUTHORS.md) for a complete overview.

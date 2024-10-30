@@ -29,11 +29,11 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/gramaziokohler/compas_xr"
-Documentation = "https://gramaziokohler.github.io/compas_xr/"
-Repository = "https://github.com/gramaziokohler/compas_xr.git"
-Changelog = "https://github.com/gramaziokohler/compas_xr/blob/main/CHANGELOG.md"
-Issues = "https://github.com/gramaziokohler/compas_xr/issues"
+Homepage = "https://github.com/compas-dev/compas_xr"
+Documentation = "https://compas.dev/compas_xr/"
+Repository = "https://github.com/compas-dev/compas_xr.git"
+Changelog = "https://github.com/compas-dev/compas_xr/blob/main/CHANGELOG.md"
+Issues = "https://github.com/compas-dev/compas_xr/issues"
 Forum = "https://forum.compas-framework.org/"
 
 # ============================================================================

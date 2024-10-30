@@ -20,7 +20,7 @@ This citation is for a conference poster; the associated paper is in press and w
             Gramazio, F. and
             Kohler, M.
             },
-        howpublished={https://github.com/gramaziokohler/compas\_xr/},
+        howpublished={https://github.com/compas-dev/compas\_xr/},
         note={ETH Z\"{u}rich, Princeton University},
         year={2024},
         doi={10.5281/zenodo.12514526},

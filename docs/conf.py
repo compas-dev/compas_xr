@@ -9,7 +9,7 @@ import sphinx_compas2_theme
 project = "COMPAS XR"
 copyright = "ETH Zurich, Princeton University"
 author = "Joseph Kenny"
-organization = "gramaziokohler"
+organization = "compas-dev"
 package = "compas_xr"
 
 master_doc = "index"

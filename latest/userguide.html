@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/css/compas.css?v=617b33e2" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=4c969af8" />
@@ -595,10 +595,10 @@ should come from each user depending on the assembly in which they would like to
 </div>
 <p>Only assemblies constructed with the processes below allow visualization in COMPAS XR Unity App:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the Assembly, Part, and Mesh classes from the compas.datastructures</span>
-<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Assembly</span><span class="p">,</span> <span class="n">Part</span><span class="p">,</span> <span class="n">Mesh</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas.datastructures</span><span class="w"> </span><span class="kn">import</span> <span class="n">Assembly</span><span class="p">,</span> <span class="n">Part</span><span class="p">,</span> <span class="n">Mesh</span>
 
 <span class="c1"># Import the Box and Cylinder classes from the compas.geometry module</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Cylinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Cylinder</span>
 
 <span class="c1"># For Geometry Assemblies acceptable add part methods</span>
 <span class="n">box_assembly</span><span class="o">.</span><span class="n">add_part</span> <span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -778,7 +778,7 @@ building plan directly from an assembly sequence provided through the COMPAS XR 
 example below. However the <strong>Building Plan</strong> and <strong>COMPAS XR Unity</strong> provide flexibility to create building steps from assembly
 parts in any sequence order as long as all steps have the complete information as seen above.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the BuildingPlanExtensions class from the compas_xr.project module</span>
-<span class="kn">from</span> <span class="nn">compas_xr.project</span> <span class="kn">import</span> <span class="n">BuildingPlanExtensions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_xr.project</span><span class="w"> </span><span class="kn">import</span> <span class="n">BuildingPlanExtensions</span>
 
 <span class="c1"># Initialize an instance of the BuildingPlanExtensions class</span>
 <span class="n">bpe</span> <span class="o">=</span> <span class="n">BuildingPlanExtensions</span><span class="p">()</span>
@@ -888,7 +888,7 @@ Firebase storage if instructed by the Application Settings data.</p>
 to FirebaseStorage as .obj files. This can be handled directly through the COMPAS XR python library, and can be handled at
 any point priority to visualization on the application side.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the AssemblyExtensions class from the compas_xr.project module</span>
-<span class="kn">from</span> <span class="nn">compas_xr.project</span> <span class="kn">import</span> <span class="n">AssemblyExtensions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_xr.project</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssemblyExtensions</span>
 
 <span class="c1"># Initialize an instance of the AssemblyExtensions class</span>
 <span class="n">ae</span> <span class="o">=</span> <span class="n">AssemblyExtensions</span><span class="p">()</span>
@@ -907,7 +907,7 @@ any point priority to visualization on the application side.</p>
 upload information consists of QRFrames, Assembly, BuildingPlan, Joints, &amp; Parts. Additionally the library allows
 functionality of uploading all required COMPAS class objects.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Project Manager class from compas_xr</span>
-<span class="kn">from</span> <span class="nn">compas_xr.project</span> <span class="kn">import</span> <span class="n">ProjectManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_xr.project</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectManager</span>
 
 <span class="c1"># Define instance of Project manager class with firebase config file path as input</span>
 <span class="n">pm</span> <span class="o">=</span> <span class="n">ProjectManager</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">)</span>
@@ -925,7 +925,7 @@ project name cannot include any extension of “.” this will signify a file ty
 <p>The application settings writer is used as a global constant that is pulled on the user device every time that the
 application is started. Additionally it requires a specific structure, and should be written from <cite>compas_xr library</cite> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Project Manager class from compas_xr</span>
-<span class="kn">from</span> <span class="nn">compas_xr.project</span> <span class="kn">import</span> <span class="n">ProjectManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_xr.project</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectManager</span>
 
 <span class="c1"># Define instance of Project manager class with firebase config file path as input</span>
 <span class="n">pm</span> <span class="o">=</span> <span class="n">ProjectManager</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">)</span>
@@ -959,7 +959,7 @@ helpful in particular assemblies of large scale).  Then it should be handled via
 functionalities listed below, as the order and data structure of uploading localization information to
 the database is particular.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Project Manager class from compas_xr</span>
-<span class="kn">from</span> <span class="nn">compas_xr.project</span> <span class="kn">import</span> <span class="n">ProjectManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_xr.project</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectManager</span>
 
 <span class="c1"># Define instance of Project manager class with firebase config file path as input</span>
 <span class="n">pm</span> <span class="o">=</span> <span class="n">ProjectManager</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">)</span>
@@ -990,7 +990,7 @@ Outputs: last_built_index, step_locations, built_human, unbuilt_human, built_rob
 <p><strong>unbuilt_robot:</strong> list of compas.Geometry
 - A list of elements in the current project data that have not been built by the robot yet.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Project Manager class from compas_xr</span>
-<span class="kn">from</span> <span class="nn">compas_xr.project</span> <span class="kn">import</span> <span class="n">ProjectManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_xr.project</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectManager</span>
 
 <span class="c1"># Define instance of Project Manager class with firebase config file path as input</span>
 <span class="n">pm</span> <span class="o">=</span> <span class="n">ProjectManager</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">)</span>

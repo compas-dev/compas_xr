@@ -6,19 +6,18 @@ CITING COMPAS XR
 
 If you are using COMPAS XR, please cite us.
 
-This citation is for a conference poster; the associated paper is in press and will soon replace it.
-
 .. code-block:: none
 
     @misc{compas-xr,
         title={{COMPAS~XR}: extended reality workflows for the COMPAS Framework},
         author={
             Kenny, J. and
-            Mitterberger, D. and
             Casas, G. and
             Alexi, E. and
+            Moisi, A. and
             Gramazio, F. and
-            Kohler, M.
+            Kohler, M. and
+            Mitterberger, D.
             },
         howpublished={https://github.com/compas-dev/compas\_xr/},
         note={ETH Z\"{u}rich, Princeton University},

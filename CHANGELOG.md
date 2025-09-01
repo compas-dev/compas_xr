@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+* Changed `compas_timber` version to >= 0.7.0
 
 ### Removed
-
 
 ## [1.0.0] 2024-06-26
 

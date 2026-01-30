@@ -8,10 +8,7 @@ import os
 import pyrebase
 from compas.data import json_dumps
 
-from compas_xr.realtime_database.realtime_database_interface import RealtimeDatabaseInterface
-
-
-class RealtimeDatabase(RealtimeDatabaseInterface):
+class RealtimeDatabase:
     """
     A RealtimeDatabase is defined by a Firebase configuration path and a shared database reference.
 

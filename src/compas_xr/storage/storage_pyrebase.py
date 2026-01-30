@@ -6,8 +6,6 @@ import pyrebase
 from compas.data import json_dumps
 from compas.data import json_loads
 
-from compas_xr.storage.storage_interface import StorageInterface
-
 try:
     # from urllib.request import urlopen
     from urllib.request import urlopen
@@ -15,7 +13,7 @@ except ImportError:
     from urllib import urlopen
 
 
-class Storage(StorageInterface):
+class Storage:
     """
     A Storage is defined by a Firebase configuration path and a shared storage reference.
 

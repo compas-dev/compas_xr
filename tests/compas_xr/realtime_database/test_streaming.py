@@ -27,7 +27,9 @@ def test_stream_to_reference(config_fp):
     database_reference = db.construct_reference(reference_name)
     stream = db.stream_data_from_reference(stream_callback, database_reference)
 
+    stream_id = stream._stream_id
     print(f"Streaming started on reference: {reference_name}")
+    print(f"Stream ID: {stream_id}")
     print("Waiting for data changes...")
     print("Press Ctrl+C to stop streaming\n")
 
@@ -37,8 +39,16 @@ def test_stream_to_reference(config_fp):
     except KeyboardInterrupt:
         print("\nStopping stream...")
 
-    stream.close()
-    print("Stream closed")
+    # Close stream via manager
+    closed = db.close_stream(stream_id)
+    if closed:
+        print(f"Stream {stream_id} closed via manager")
+    else:
+        print(f"Stream {stream_id} not found in active streams")
+    
+    # Show remaining active streams
+    remaining = len(db._active_streams)
+    print(f"Remaining active streams: {remaining}")
 
 
 if __name__ == "__main__":
@@ -48,6 +58,8 @@ if __name__ == "__main__":
     Usage:
         python test_streaming.py [path/to/firebase_config.json]
     """
+    #TODO: Test Compas Eve for a python env.
+
     default_config = (
         r"C:\Users\jk6372\Desktop\00_princeton_projects\00_robotic_territories"
         r"\00_git\compas_xr_robotic_territories\dev\performance_operations"

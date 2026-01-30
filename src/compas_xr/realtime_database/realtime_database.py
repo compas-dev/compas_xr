@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import json
 import os
+import uuid
 
 import pyrebase
 from compas.data import json_dumps
@@ -35,6 +36,7 @@ class RealtimeDatabase:
 
     def __init__(self, config_path):
         self.config_path = config_path
+        self._active_streams = {}  # Track {stream_id: stream_object}
         self._ensure_database()
 
     def _ensure_database(self):
@@ -171,7 +173,7 @@ class RealtimeDatabase:
         data_dict = dict(data)
         return data_dict
 
-    def stream_data_from_reference(self, callback, database_reference, enabled=True):
+    def stream_data_from_reference(self, callback, database_reference):
         """
         Streams data from a constructed database reference.
 
@@ -182,19 +184,20 @@ class RealtimeDatabase:
             The function should accept one parameter: message (dict with 'event', 'path', 'data').
         database_reference: 'pyrebase.pyrebase.Database'
             Reference to the database location where the data will be streamed from.
-        enabled : bool, optional
-            When False, streaming is skipped and None is returned (default is True).
 
         Returns
         -------
         stream : object
             The stream object that can be closed later using stream.close().
+            The stream is automatically tracked internally by stream_id.
 
         """
-        if not enabled:
-            return None
         self._ensure_database()
-        return database_reference.stream(callback)
+        stream = database_reference.stream(callback)
+        stream_id = str(uuid.uuid4())
+        self._active_streams[stream_id] = stream
+        stream._stream_id = stream_id  # Attach ID to stream object for reference
+        return stream
 
     def upload_data_to_reference(self, data, database_reference):
         """
@@ -470,3 +473,40 @@ class RealtimeDatabase:
         """
         database_reference = self.construct_reference_from_list(reference_list)
         self.delete_data_from_reference(database_reference)
+
+    def close_stream(self, stream_id):
+        """
+        Closes a specific active stream by its stream ID.
+
+        Parameters
+        ----------
+        stream_id : str
+            The unique identifier of the stream to close.
+
+        Returns
+        -------
+        bool
+            True if stream was closed, False if stream_id not found.
+
+        """
+        if stream_id in self._active_streams:
+            self._active_streams[stream_id].close()
+            del self._active_streams[stream_id]
+            return True
+        return False
+
+    def close_all_streams(self):
+        """
+        Closes all active streams managed by this RealtimeDatabase instance.
+
+        Returns
+        -------
+        int
+            The number of streams closed.
+
+        """
+        count = len(self._active_streams)
+        for stream in list(self._active_streams.values()):
+            stream.close()
+        self._active_streams.clear()
+        return count

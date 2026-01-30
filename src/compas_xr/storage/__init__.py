@@ -18,6 +18,6 @@ Classes
 
 """
 
-from compas_xr.storage.storage_pyrebase import Storage
+from compas_xr.storage.storage import Storage
 
 __all__ = ["Storage"]

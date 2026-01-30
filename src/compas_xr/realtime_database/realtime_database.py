@@ -171,8 +171,30 @@ class RealtimeDatabase:
         data_dict = dict(data)
         return data_dict
 
-    def stream_data_from_reference(self, callback, database_reference):
-        raise NotImplementedError("Function Under Developement")
+    def stream_data_from_reference(self, callback, database_reference, enabled=True):
+        """
+        Streams data from a constructed database reference.
+
+        Parameters
+        ----------
+        callback : function
+            A callback function that will be called whenever data changes.
+            The function should accept one parameter: message (dict with 'event', 'path', 'data').
+        database_reference: 'pyrebase.pyrebase.Database'
+            Reference to the database location where the data will be streamed from.
+        enabled : bool, optional
+            When False, streaming is skipped and None is returned (default is True).
+
+        Returns
+        -------
+        stream : object
+            The stream object that can be closed later using stream.close().
+
+        """
+        if not enabled:
+            return None
+        self._ensure_database()
+        return database_reference.stream(callback)
 
     def upload_data_to_reference(self, data, database_reference):
         """
@@ -193,6 +215,69 @@ class RealtimeDatabase:
         # TODO: Check if this is stupid... it provides the functionality of making it work with compas objects and consistency across both child classes
         json_string = json_dumps(data)
         database_reference.set(json.loads(json_string))
+
+    def stream_data(self, callback, reference_name):
+        """
+        Streams data from the Firebase Realtime Database under the specified reference name.
+
+        The callback function is invoked whenever data at the reference changes.
+
+        Parameters
+        ----------
+        callback : function
+            A callback function that will be called whenever data changes.
+            The function should accept one parameter: message (dict with 'event', 'path', 'data').
+        reference_name : str
+            The name of the reference to stream from.
+
+        Returns
+        -------
+        stream : object
+            The stream object that can be closed later using stream.close().
+
+        """
+        database_reference = self.construct_reference(reference_name)
+        return self.stream_data_from_reference(callback, database_reference)
+
+    def stream_child_data(self, callback, reference_name, child_name):
+        """
+        Streams data from the Firebase Realtime Database under specified reference & child name.
+
+        Parameters
+        ----------
+        callback : function
+            A callback function that will be called whenever data changes.
+        reference_name : str
+            The name of the reference under which the child exists.
+        child_name : str
+            The name of the child reference to stream from.
+
+        Returns
+        -------
+        stream : object
+            The stream object that can be closed later using stream.close().
+        """
+        database_reference = self.construct_child_refrence(reference_name, child_name)
+        return self.stream_data_from_reference(callback, database_reference)
+
+    def stream_deep_reference(self, callback, reference_list):
+        """
+        Streams data from the Firebase Realtime Database under specified reference names in list order.
+
+        Parameters
+        ----------
+        callback : function
+            A callback function that will be called whenever data changes.
+        reference_list : list of str
+            The names in sequence order for the nested reference path.
+
+        Returns
+        -------
+        stream : object
+            The stream object that can be closed later using stream.close().
+        """
+        database_reference = self.construct_reference_from_list(reference_list)
+        return self.stream_data_from_reference(callback, database_reference)
 
     def upload_data(self, data, reference_name):
         """

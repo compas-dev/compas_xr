@@ -15,9 +15,12 @@ Classes
     :nosignatures:
 
     RealtimeDatabase
+    RealtimeDatabase
+    RealtimeDatabaseRDB
 
 """
 
 from compas_xr.realtime_database.realtime_database import RealtimeDatabase
+from compas_xr.realtime_database.realtime_database_rdb import RealtimeDatabaseRDB
 
-__all__ = ["RealtimeDatabase"]
+__all__ = ["RealtimeDatabase", "RealtimeDatabaseRDB"]

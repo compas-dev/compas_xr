@@ -3,21 +3,25 @@ import sys
 import time
 import json
 
-from compas_xr.realtime_database import RealtimeDatabase
+from compas_xr.realtime_database import RealtimeDatabaseRDB
 
 
 def test_stream_to_reference(config_fp):
     """
-    Simple test that streams to a specific reference.
+    Simple test that streams to a specific reference (Table) using RethinkDB backend.
+
+    To run this test, ensure that RethinkDB is running. You can use docker to start a new instance:
+
+        docker run -d -P --name rethink1 rethinkdb
 
     Parameters
     ----------
     config_fp : str
-        Path to the Firebase configuration JSON file.
+        Path to the RethinkDB configuration JSON file.
     """
     with open(config_fp, "r") as f:
         config = json.load(f)
-    db = RealtimeDatabase(config)
+    db = RealtimeDatabaseRDB(config)
 
     def stream_callback(message):
         print(f"Event: {message['event']}")
@@ -26,6 +30,10 @@ def test_stream_to_reference(config_fp):
         print(f"Message: {message}")
         print("-" * 40)
 
+    # In RethinkDB implementation, reference maps to a Table.
+    # Ensure table "Users" exists in "test" db for this to work perfectly,
+    # but the stream will just wait or fail silently/loudly in thread if not.
+    # For robust test we might want to ensure table exists, but let's follow the pattern.
     reference_name = "Users"
     database_reference = db.construct_reference(reference_name)
     stream = db.stream_data_from_reference(stream_callback, database_reference)
@@ -57,17 +65,11 @@ def test_stream_to_reference(config_fp):
 if __name__ == "__main__":
     """
     Run streaming test directly with a config file path.
-
-    Usage:
-        python test_streaming.py [path/to/firebase_config.json]
     """
-    # TODO: Test Compas Eve for a python env.
 
-    default_config = (
-        r"C:\Users\jk6372\Desktop\00_princeton_projects\00_robotic_territories"
-        r"\00_git\compas_xr_robotic_territories\dev\performance_operations"
-        r"\fb_config\robotic_territories_fb.json"
-    )
+    # Default relative to this script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    default_config = os.path.join(current_dir, "rethink_config.json")
 
     if len(sys.argv) >= 2:
         config_fp = sys.argv[1]

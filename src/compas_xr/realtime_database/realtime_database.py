@@ -12,20 +12,20 @@ from compas.data import json_dumps
 
 class RealtimeDatabase:
     """
-    A RealtimeDatabase is defined by a Firebase configuration path and a shared database reference.
+    A RealtimeDatabase is defined by a Firebase configuration dict and a shared database reference.
 
     The RealtimeDatabase class is responsible for initializing and managing the connection to a Firebase Realtime Database.
     It ensures that the database connection is established only once and shared across all instances of the class.
 
     Parameters
     ----------
-    config_path : str
-        The path to the Firebase configuration JSON file.
+    config : dict
+        The Firebase configuration dictionary.
 
     Attributes
     ----------
-    config_path : str
-        The path to the Firebase configuration JSON file.
+    config : dict
+        The Firebase configuration dictionary.
     database : Database
         The Database instance representing the connection to the Firebase Realtime Database.
     _shared_database : Database, class attribute
@@ -34,8 +34,8 @@ class RealtimeDatabase:
 
     _shared_database = None
 
-    def __init__(self, config_path):
-        self.config_path = config_path
+    def __init__(self, config):
+        self.config = config
         self._active_streams = {}  # Track {stream_id: stream_object}
         self._ensure_database()
 
@@ -46,14 +46,8 @@ class RealtimeDatabase:
         If the connection is already established, it returns the existing connection.
         """
         if not RealtimeDatabase._shared_database:
-            path = self.config_path
-
-            if not os.path.exists(path):
-                raise Exception("Could not find config file at path {}!".format(path))
-            with open(path) as config_file:
-                config = json.load(config_file)
             # TODO: Database Authorization (Works only with public databases)
-            firebase = pyrebase.initialize_app(config)
+            firebase = pyrebase.initialize_app(self.config)
             RealtimeDatabase._shared_database = firebase.database()
 
         if not RealtimeDatabase._shared_database:

@@ -1,10 +1,9 @@
-import os
-
 from compas.geometry import Frame
 from compas_timber.assembly import TimberAssembly
 from compas_timber.planning import BuildingPlan
 from compas_timber.planning import Step
 
+from compas_xr.configuration import Configuration
 from compas_xr.project.assembly_extensions import AssemblyExtensions
 from compas_xr.realtime_database import RealtimeDatabase
 from compas_xr.storage import Storage
@@ -29,10 +28,10 @@ class ProjectManager(object):
     """
 
     def __init__(self, config_path):
-        if not os.path.exists(config_path):
-            raise Exception("Could not create Storage or Database with path {}!".format(config_path))
-        self.storage = Storage(config_path)
-        self.database = RealtimeDatabase(config_path)
+        config = Configuration.from_file(config_path)
+
+        self.storage = Storage(config)
+        self.database = RealtimeDatabase(config)
 
     def application_settings_writer(self, project_name, storage_folder="None", z_to_y_remap=False):
         """

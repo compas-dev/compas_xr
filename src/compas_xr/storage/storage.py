@@ -15,28 +15,28 @@ except ImportError:
 
 class Storage:
     """
-    A Storage is defined by a Firebase configuration path and a shared storage reference.
+    A Storage is defined by a Firebase configuration dict and a shared storage reference.
 
     The Storage class is responsible for initializing and managing the connection to a Firebase Storage.
     It ensures that the storage connection is established only once and shared across all instances of the class.
 
     Parameters
     ----------
-    config_path : str
-        The path to the Firebase configuration JSON file.
+    config : dict
+        The Firebase configuration dictionary.
 
     Attributes
     ----------
-    config_path : str
-        The path to the Firebase configuration JSON file.
+    config : dict
+        The Firebase configuration dictionary.
     _shared_storage : pyrebase.Storage, class attribute
         The shared pyrebase.Storage instance representing the connection to the Firebase Storage.
     """
 
     _shared_storage = None
 
-    def __init__(self, config_path):
-        self.config_path = config_path
+    def __init__(self, config):
+        self.config = config
         self._ensure_storage()
 
     def _ensure_storage(self):
@@ -46,13 +46,8 @@ class Storage:
         If the connection is already established, it returns the existing connection.
         """
         if not Storage._shared_storage:
-            path = self.config_path
-            if not os.path.exists(path):
-                raise Exception("Path Does Not Exist: {}".format(path))
-            with open(path) as config_file:
-                config = json.load(config_file)
             # TODO: Authorization for storage security (Works for now for us because our Storage is public)
-            firebase = pyrebase.initialize_app(config)
+            firebase = pyrebase.initialize_app(self.config)
             Storage._shared_storage = firebase.storage()
 
         if not Storage._shared_storage:

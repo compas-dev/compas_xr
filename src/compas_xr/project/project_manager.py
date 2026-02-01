@@ -1,5 +1,3 @@
-import os
-
 from compas.geometry import Frame
 from compas_timber.assembly import TimberAssembly
 from compas_timber.planning import BuildingPlan

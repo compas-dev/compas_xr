@@ -1,7 +1,6 @@
 import threading
 import uuid
 
-from compas.data import json_dumps
 from rethinkdb import r
 
 

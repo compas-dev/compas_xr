@@ -62,15 +62,9 @@ def validate_reference_parts(parts, invalid_chars=None):
     invalid_chars = invalid_chars or set()
     for part in parts:
         if any(char in part for char in invalid_chars):
-            raise ValueError(
-                "invalid path segment '{}': contains one of {}".format(
-                    part, " ".join(sorted(invalid_chars))
-                )
-            )
+            raise ValueError("invalid path segment '{}': contains one of {}".format(part, " ".join(sorted(invalid_chars))))
         if any(ord(char) < 32 or ord(char) == 127 for char in part):
-            raise ValueError(
-                "invalid path segment '{}': contains control characters".format(part)
-            )
+            raise ValueError("invalid path segment '{}': contains control characters".format(part))
 
 
 def validate_reference_path(path, invalid_chars=None):

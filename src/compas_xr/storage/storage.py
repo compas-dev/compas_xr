@@ -5,6 +5,7 @@ import os
 import pyrebase
 from compas.data import json_dumps
 from compas.data import json_loads
+
 from compas_xr._path import validate_reference_path
 
 try:

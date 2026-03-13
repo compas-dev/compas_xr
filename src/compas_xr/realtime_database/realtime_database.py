@@ -7,6 +7,7 @@ import os
 
 import pyrebase
 from compas.data import json_dumps
+
 from compas_xr._path import validate_reference_path
 
 
@@ -242,4 +243,3 @@ class RealtimeDatabase:
         """
         database_reference = self.construct_reference(path)
         self.delete_data_from_reference(database_reference)
-

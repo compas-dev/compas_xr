@@ -1,12 +1,11 @@
 attrs >=17.4
 black >=22.12.0
 bump-my-version
-compas_invocations2
+compas_invocations2[mkdocs] @ git+https://github.com/compas-dev/compas_invocations2.git@mkdocs
 invoke >=0.14
 pythonnet
 rhino-stubs
 ruff
-sphinx_compas2_theme
 tomlkit
 twine
 wheel

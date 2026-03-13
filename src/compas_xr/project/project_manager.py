@@ -109,7 +109,8 @@ class ProjectManager(object):
         None
 
         """
-        self.database.upload_data_to_reference_as_child(data, project_name, data_name)
+        path = "{}/{}".format(project_name, data_name)
+        self.database.upload_data(data, path)
 
     def upload_project_data_from_compas(self, project_name, assembly, building_plan, qr_frames_list):
         """
@@ -152,7 +153,8 @@ class ProjectManager(object):
         """
         qr_assembly = AssemblyExtensions().create_qr_assembly(qr_frames_list)
         data = qr_assembly.__data__
-        self.database.upload_data_to_reference_as_child(data, project_name, "QRFrames")
+        path = "{}/{}".format(project_name, "QRFrames")
+        self.database.upload_data(data, path)
 
     def upload_obj_to_storage(self, path_local, storage_folder_name):
         """
@@ -170,8 +172,9 @@ class ProjectManager(object):
         None
 
         """
-        storage_folder_list = ["obj_storage", storage_folder_name]
-        self.storage.upload_file_as_bytes_to_deep_reference(path_local, storage_folder_list)
+        file_name = os.path.basename(path_local)
+        storage_path = "obj_storage/{}/{}".format(storage_folder_name, file_name)
+        self.storage.upload_file_as_bytes_to_path(path_local, storage_path)
 
     def upload_objs_from_directory_to_storage(self, local_directory, storage_folder_name):
         """
@@ -189,8 +192,14 @@ class ProjectManager(object):
         None
 
         """
-        storage_folder_list = ["obj_storage", storage_folder_name]
-        self.storage.upload_files_as_bytes_from_directory_to_deep_reference(local_directory, storage_folder_list)
+        if not os.path.exists(local_directory) or not os.path.isdir(local_directory):
+            raise FileNotFoundError("Directory not found: {}".format(local_directory))
+
+        for file_name in os.listdir(local_directory):
+            local_path = os.path.join(local_directory, file_name)
+            if os.path.isfile(local_path):
+                storage_path = "obj_storage/{}/{}".format(storage_folder_name, file_name)
+                self.storage.upload_file_as_bytes_to_path(local_path, storage_path)
 
     def get_project_data(self, project_name):
         """
@@ -268,13 +277,13 @@ class ProjectManager(object):
         None
 
         """
-        database_reference_list = [project_name, "building_plan", "data", "steps", key, "data"]
-        current_data = self.database.get_data_from_deep_reference(database_reference_list)
+        database_path = "{}/building_plan/data/steps/{}/data".format(project_name, key)
+        current_data = self.database.get_data(database_path)
         current_data["actor"] = actor
         current_data["is_built"] = is_built
         current_data["is_planned"] = is_planned
         current_data["priority"] = priority
-        self.database.upload_data_to_deep_reference(current_data, database_reference_list)
+        self.database.upload_data(current_data, database_path)
 
     def visualize_project_state_timbers(self, timber_assembly, project_name):
         """
@@ -304,8 +313,8 @@ class ProjectManager(object):
 
         """
         nodes = timber_assembly.graph.__data__["node"]
-        buiding_plan_data_reference_list = [project_name, "building_plan", "data"]
-        current_state_data = self.database.get_data_from_deep_reference(buiding_plan_data_reference_list)
+        building_plan_data_path = "{}/building_plan/data".format(project_name)
+        current_state_data = self.database.get_data(building_plan_data_path)
 
         built_human = []
         unbuilt_human = []
@@ -380,8 +389,8 @@ class ProjectManager(object):
             The parts that have not been built by a robot.
 
         """
-        buiding_plan_data_reference_list = [project_name, "building_plan", "data"]
-        current_state_data = self.database.get_data_from_deep_reference(buiding_plan_data_reference_list)
+        building_plan_data_path = "{}/building_plan/data".format(project_name)
+        current_state_data = self.database.get_data(building_plan_data_path)
         nodes = assembly.graph.__data__["node"]
 
         built_human = []

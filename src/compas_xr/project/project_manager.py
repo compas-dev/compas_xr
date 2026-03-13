@@ -10,7 +10,7 @@ from compas_xr.realtime_database import RealtimeDatabase
 from compas_xr.storage import Storage
 
 
-class ProjectManager(object):
+class ProjectManager:
     """
     The ProjectManager class is responsible for managing project specific data and operations that involve
     Firebase Storage and Realtime Database configuration.

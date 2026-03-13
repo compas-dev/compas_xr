@@ -1,13 +1,10 @@
-class TrajectoryResultManager(object):
+class TrajectoryResultManager:
     trajectory = None
     requested_element_id = None
     robot_base_fame = None
     pick_and_place = None
     pick_index = None
     end_effector_link_name = None
-
-    def ToString(self):
-        return str(self)
 
     def __str__(self):
         return "Planning result for element {} with {} points".format(self.requested_element_id, len(self.trajectory.points))

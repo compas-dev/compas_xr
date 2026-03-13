@@ -3,7 +3,7 @@ from compas_timber.planning import SimpleSequenceGenerator
 from compas_timber.planning import Step
 
 
-class BuildingPlanExtensions(object):
+class BuildingPlanExtensions:
     """
     BuildingPlanExtensions is a class for extending the functionality of the :class:`~compas_timber.planning.BuildingPlan` class.
 

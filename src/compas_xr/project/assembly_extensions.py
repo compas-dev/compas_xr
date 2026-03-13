@@ -10,7 +10,7 @@ from compas.geometry import Vector
 from compas_timber.consumers import BrepGeometryConsumer
 
 
-class AssemblyExtensions(object):
+class AssemblyExtensions:
     """
     AssemblyExtensions is a class for extending the functionality of the :class:`~compas.datastructures.Assembly` class.
 

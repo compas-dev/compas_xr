@@ -7,7 +7,7 @@ from compas.geometry import Frame
 from compas_eve import Message
 
 
-class SequenceCounter(object):
+class SequenceCounter:
     """An atomic, thread-safe sequence increament counter that increments with each message."""
 
     ROLLOVER_THRESHOLD = sys.maxsize
@@ -36,7 +36,7 @@ class SequenceCounter(object):
                 self._value = value
 
 
-class ResponseID(object):
+class ResponseID:
     """An atomic, thread-safe counter that increments with each service routine."""
 
     ROLLOVER_THRESHOLD = sys.maxsize

@@ -5,26 +5,21 @@ We highly recommend using [uv](https://docs.astral.sh/uv/) for managing
 your Python environment and dependencies, as it is significantly faster and
 more reliable. Alternatively, you can simply use standard `pip`.
 
-## Prerequisites
-
-* **Operating System:** Windows, macOS, or Linux.
-* **Rhino:** Rhino 8+ is required for the CAD integration features.
-
 ## Install uv
 
 If you do not have `uv` installed, follow the instructions on their website or run:
 
-**Mac/Linux:**
+=== "Mac/Linux"
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
 
-**Windows:**
+=== "Windows"
 
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
+    ```powershell
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+    ```
 
 ## Create a virtual environment
 
@@ -37,17 +32,17 @@ uv venv
 
 This creates a virtual environment in `.venv`. Activate it with:
 
-**Mac/Linux:**
+=== "Mac/Linux"
 
-```bash
-source .venv/bin/activate
-```
+    ```bash
+    source .venv/bin/activate
+    ```
 
-**Windows:**
+=== "Windows"
 
-```powershell
-.venv\Scripts\activate
-```
+    ```powershell
+    .venv\Scripts\activate
+    ```
 
 ## Install compas_xr
 
@@ -69,7 +64,7 @@ If the version number is printed, the installation is complete.
 
 ## Install for Rhino
 
-In Rhino 8, simply add the requirement header to your script in the Script Editor:
+COMPAS XR is compatible with Rhino 8 and later versions. To use it, simply add the requirement header to the top of your script in the Rhino 8 Script Editor:
 
 ```python
 # r: compas_xr

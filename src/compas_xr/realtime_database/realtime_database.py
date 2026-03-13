@@ -253,7 +253,7 @@ class RealtimeDatabase:
         database_reference = self.construct_reference_from_list(reference_list)
         self.upload_data_to_reference(data, database_reference)
 
-    def upload_data_from_file(self, path_local, refernce_name):
+    def upload_data_from_file(self, path_local, reference_name):
         """
         Uploads data to the Firebase Realtime Database under specified reference name from a file.
 
@@ -273,7 +273,7 @@ class RealtimeDatabase:
             raise Exception("path does not exist {}".format(path_local))
         with open(path_local) as config_file:
             data = json.load(config_file)
-        database_reference = self.construct_reference(refernce_name)
+        database_reference = self.construct_reference(reference_name)
         self.upload_data_to_reference(data, database_reference)
 
     def get_data(self, reference_name):
@@ -320,8 +320,6 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        data : Any
-            The data to be uploaded, needs to be JSON serializable.
         reference_list : list of str
             The names in sequence order in which the is nested.
 

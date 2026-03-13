@@ -160,7 +160,7 @@ class ProjectManager:
 
         Parameters
         ----------
-        file_path : str
+        path_local : str
             The path at which the obj file is stored.
         storage_folder_name : str
             The name of the storage folder where the .obj file will be uploaded.
@@ -179,7 +179,7 @@ class ProjectManager:
 
         Parameters
         ----------
-        directory_path : str
+        local_directory : str
             The path to the directory where the projects .obj files are stored.
         storage_folder_name : str
             The name of the storage folder where the .obj files will be uploaded.

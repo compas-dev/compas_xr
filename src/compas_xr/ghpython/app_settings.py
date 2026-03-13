@@ -1,4 +1,16 @@
 class AppSettings:
+    """Class representing application settings for the XR project.
+
+    Parameters
+    ----------
+    project_name : str
+        Name of the project.
+    storage_folder : str, optional
+        Folder for storage. Defaults to ``None``.
+    z_to_y_remap : bool, optional
+        Whether to remap Z axis to Y axis. Defaults to ``False``.
+    """
+
     def __init__(self, project_name, storage_folder=None, z_to_y_remap=None):
         self.project_name = project_name
         self.storage_folder = storage_folder or "None"

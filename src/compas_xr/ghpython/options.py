@@ -1,4 +1,16 @@
 class MqttMessageOptionsXR:
+    """Options for MQTT messaging in XR context.
+
+    Parameters
+    ----------
+    host : str
+        MQTT broker host.
+    project_name : str
+        Name of the project.
+    robot_name : str
+        Name of the robot.
+    """
+
     def __init__(self, host, project_name, robot_name):
         self.host = host
         self.project_name = project_name

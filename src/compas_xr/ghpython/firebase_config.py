@@ -1,4 +1,18 @@
 class FirebaseConfig:
+    """Configuration for Firebase connection.
+
+    Parameters
+    ----------
+    api_key : str
+        API key for Firebase.
+    auth_domain : str
+        Auth domain for Firebase.
+    database_url : str
+        URL of the Firebase database.
+    storage_bucket : str
+        Storage bucket for Firebase.
+    """
+
     def __init__(self, api_key, auth_domain, database_url, storage_bucket):
         self.api_key = api_key
         self.auth_domain = auth_domain

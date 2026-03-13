@@ -1,4 +1,6 @@
 class TrajectoryResultManager:
+    """Manager for trajectory results."""
+
     trajectory = None
     requested_element_id = None
     robot_base_fame = None

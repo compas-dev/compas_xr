@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+* Removed Support for IronPython 2.7 support
 
 ## [1.0.0] 2024-06-26
 

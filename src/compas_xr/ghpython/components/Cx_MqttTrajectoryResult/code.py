@@ -1,3 +1,4 @@
+# r: compas_xr>=2.0.0
 """
 Sync Results.
 
@@ -6,12 +7,12 @@ The Sync Result component is used to consolidate all user-defined inputs for the
 COMPAS XR v1.0.0
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+import Grasshopper
 
 from compas_xr.ghpython import TrajectoryResultManager
 
 
-class SyncResultComponent(component):
+class SyncResultComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(self, element_id, trajectory, robot_base_frame, pick_and_place, pick_index, ee_link_name, options):
         if element_id:
             result = TrajectoryResultManager()

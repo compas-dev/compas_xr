@@ -1,18 +1,19 @@
+# r: compas_xr>=2.0.0
 """
 Planning service response.
 
 COMPAS XR v1.0.0
 """
 
+import Grasshopper
 from compas_eve import Publisher
 from compas_eve import Topic
 from compas_eve.mqtt import MqttTransport
-from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_xr.mqtt import GetTrajectoryResult
 
 
-class PlanningServiceResponseComponent(component):
+class PlanningServiceResponseComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(self, options, result, publish):
         if not result:
             self.Message = "Null Result, unable to publish"

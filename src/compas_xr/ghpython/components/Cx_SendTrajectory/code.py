@@ -1,3 +1,4 @@
+# r: compas_xr>=2.0.0
 """
 Component to handle execution of trajectory.
 
@@ -6,11 +7,11 @@ Gets trajectories to be executed by a robot.
 COMPAS XR v1.0.0
 """
 
+import Grasshopper
 from compas_eve import Subscriber
 from compas_eve import Topic
 from compas_eve.ghpython import BackgroundWorker
 from compas_eve.mqtt import MqttTransport
-from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_xr.mqtt import SendTrajectory
 
@@ -38,7 +39,7 @@ def stop_server(worker):
     worker.display_message("Stopped")
 
 
-class ExecuteTrajectoryServiceComponent(component):
+class ExecuteTrajectoryServiceComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(self, options, reset, on):
         if not on:
             BackgroundWorker.stop_instance_by_component(ghenv)  # noqa: F821

@@ -2,70 +2,95 @@
 Installation
 ********************************************************************************
 
-This chapter provides a step-by-step guide for installing compas_xr on your system. The library can be
-installed using either pip or conda, which are widely-used package managers for Python. The following
-instructions will guide you through each method. Alternatively, you can clone the ``compas_xr`` library
-directly from our `repository <https://github.com/compas-dev/compas_xr>`_.
+This chapter provides a step-by-step guide for installing ``compas_xr`` on your system.
+We highly recommend using `uv <https://docs.astral.sh/uv/>`_ for managing
+your Python environment and dependencies, as it is significantly faster and
+more reliable. Alternatively, you can simply use standard ``pip``.
 
-Installation using conda
-========================
+Prerequisites
+=============
 
-Conda is an open-source package management system and environment management system that runs on Windows,
-macOS, and Linux. It is very popular in the realm of scientific computing.
+* **Operating System:** Windows, macOS, or Linux.
+* **Rhino:** Rhino 8+ is required for the CAD integration features.
 
-Step 1: Create a conda environment (Optional)
-=============================================
+Install uv
+==========
 
-It's often beneficial to create a new environment for your project. This can be done using the following command:
-::
-    conda create --name my_environment_name
+If you do not have ``uv`` installed, follow the instructions on their website or run:
 
-Replace my_environment_name with your desired environment name.
+**Mac/Linux:**
 
-Activate the new environment by running:
-::
-    conda activate my_environment_name
+.. code-block:: bash
 
-Step 2: Update pip
-==================
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-It is good practice to ensure that you are using the latest version of pip. To update pip, run the following command:
-::
-    python -m pip install --upgrade pip
+**Windows:**
 
-Step 3: Install compas_xr
-=========================
+.. code-block:: powershell
 
-To install compas_xr using pip, execute the following command:
-::
-    pip install compas_xr
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+Create a virtual environment
+============================
+
+It is best practice to install ``compas_xr`` in a virtual environment.
+Navigate to your project directory and run:
+
+.. code-block:: bash
+
+    uv venv
+
+This creates a virtual environment in ``.venv``. Activate it with:
+
+**Mac/Linux:**
+
+.. code-block:: bash
+
+    source .venv/bin/activate
+
+**Windows:**
+
+.. code-block:: powershell
+
+    .venv\Scripts\activate
+
+Install compas_xr
+=================
+
+With your virtual environment activated, install ``compas_xr``:
+
+.. code-block:: bash
+
+    uv pip install compas_xr
 
 Verify installation
 ===================
 
-After installation, you can verify that the compas_xr has been successfully installed by running:
-::
+Verify that ``compas_xr`` is available:
+
+.. code-block:: bash
+
     python -c "import compas_xr; print(compas_xr.__version__)"
 
+If the version number is printed, the installation is complete.
 
-If everything worked out correctly, the version of the installed package will be printed on the screen, and you can
-start using the toolkit into your projects.
+Install for Rhino
+=================
 
-Installing COMPAS packages for Rhino environments
-=================================================
+In Rhino 8, simply add the requirement header to your script in the Script Editor:
 
-After verification of installation you can run the command below to install all COMPAS packages within your Rhino Environment:
-::
-    python -m compas_rhino.install
+.. code-block:: python
+
+    # r: compas_xr
 
 COMPAS XR Unity - Phone Based AR Application
 ============================================
 
 This chapter provides a step-by-step guide for installing compas_xr_unity on your device. The use and installation of
-the application is supported by both Android and ios devices. If you would like to install the application without
-functionality or code modifications Android .apk file, and ios xcode build can be found `here <https://nextcloud.ethz.ch/s/QyGgN84yx3LBfNs>`_.
+the application is supported by both Android and iOS devices. If you would like to install the application without
+functionality or code modifications, the Android .apk file and iOS Xcode build can be found `here <https://nextcloud.ethz.ch/s/QyGgN84yx3LBfNs>`_.
 
-However, if you would like to modify any application functionalities or anything the entire code base for the application
-can be found and cloned from our `repository <https://github.com/compas-dev/compas_xr>`_.
+However, if you would like to modify any application functionalities or access the entire code base for the application,
+it can be found and cloned from our `repository <https://github.com/compas-dev/compas_xr>`_.
 
-Additionally, both Android and device installation procedures can be found in the Release Procedures chapter of the documentation.
+Additionally, both Android and iOS installation procedures can be found in the :ref:`release-procedures` chapter of the documentation.

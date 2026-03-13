@@ -14,16 +14,16 @@
 
 ## Installation
 
-> It is recomended you install `compas_xr` inside a virtual environment.
+It is recommended to install `compas_xr` inside a virtual environment. We suggest using [uv](https://docs.astral.sh/uv/) for faster and more reliable dependency management.
 
 ```bash
-pip install compas_xr
+uv pip install compas_xr
 ```
 
-To install `compas_xr` to Rhino run
+To use `compas_xr` in Rhino 8, add the requirements header to your script:
 
-```bash
-python -m compas_rhino.install
+```python
+# r: compas_xr
 ```
 
 ## First Steps

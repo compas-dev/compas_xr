@@ -9,7 +9,6 @@ dependencies:
   - compas=2.*
   - compas_timber=0.7.*
   - compas_eve=1.*
-  - compas_fab=1.*
   - pip:
     - pyrebase4>4.7.1
     # dev requirements
@@ -18,6 +17,7 @@ dependencies:
     - bump-my-version
     - compas_invocations2
     - invoke >=0.14
+    - rhino-stubs
     - ruff
     - sphinx_compas2_theme
     - twine

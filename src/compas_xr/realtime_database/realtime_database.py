@@ -2,7 +2,6 @@ import json
 import os
 from typing import Any
 from typing import Callable
-from typing import List
 
 import pyrebase
 from compas.data import json_dumps

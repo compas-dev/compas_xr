@@ -96,6 +96,7 @@ plugins:
             - https://docs.python.org/3/objects.inv
             - https://compas.dev/compas/latest/objects.inv
             - https://gramaziokohler.github.io/compas_timber/0.7.0/objects.inv
+            - https://compas.dev/compas_eve/latest/objects.inv
           options:
             allow_inspection: true
             backlinks: tree

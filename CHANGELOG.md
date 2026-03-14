@@ -9,12 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Added type hints to all public methods and functions
+
 ### Changed
+
+* Update Grasshopper components to build as CPython 3.x components
+* Migrated documentation to Mkdocs format
 
 ### Removed
 
 * Removed Support for IronPython 2.7 support
 * Refactored RealtimeDatabase and Storage Classes to path based references.
+* Removes dependency on `compas_fab`
+* Removed Rhino 7 post installation hooks
 
 ## [1.0.0] 2024-06-26
 

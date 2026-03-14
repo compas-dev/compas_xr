@@ -1,5 +1,9 @@
 import os
+from typing import Any
+from typing import Union
 
+from compas.datastructures import Assembly
+from compas.geometry import Box
 from compas.geometry import Frame
 from compas_timber.assembly import TimberAssembly
 from compas_timber.planning import BuildingPlan
@@ -10,14 +14,14 @@ from compas_xr.realtime_database import RealtimeDatabase
 from compas_xr.storage import Storage
 
 
-class ProjectManager(object):
+class ProjectManager:
     """
     The ProjectManager class is responsible for managing project specific data and operations that involve
     Firebase Storage and Realtime Database configuration.
 
     Parameters
     ----------
-    config_path : str
+    config_path
         The path to the configuration file for the project.
 
     Attributes
@@ -28,49 +32,45 @@ class ProjectManager(object):
         The realtime database instance for the project.
     """
 
-    def __init__(self, config_path):
+    def __init__(self, config_path: str):
         if not os.path.exists(config_path):
             raise Exception("Could not create Storage or Database with path {}!".format(config_path))
         self.storage = Storage(config_path)
         self.database = RealtimeDatabase(config_path)
 
-    def application_settings_writer(self, project_name, storage_folder="None", z_to_y_remap=False):
+    def application_settings_writer(self, project_name: str, storage_folder: str = "None", z_to_y_remap: bool = False) -> None:
         """
         Uploads required application settings to the Firebase RealtimeDatabase.
 
         Parameters
         ----------
-        project_name : str
+        project_name
             The name of the project where the app will look for information.
-        storage_folder : str, optional
-            The name of the storage folder, by default "None"
-        z_to_y_remap : bool, optional
-            The orientation of the object, if the obj was exported with z to y remap, by default False
-
-        Returns
-        -------
-        None
-
+        storage_folder
+            The name of the storage folder.
+        z_to_y_remap
+            The orientation of the object, if the obj was exported with z to y remap.
         """
         data = {"project_name": project_name, "storage_folder": storage_folder, "z_to_y_remap": z_to_y_remap}
         self.database.upload_data(data, "ApplicationSettings")
 
-    def create_project_data_from_compas(self, assembly, building_plan, qr_frames_list):
+    def create_project_data_from_compas(
+        self,
+        assembly: Union[TimberAssembly, Assembly],
+        building_plan: BuildingPlan,
+        qr_frames_list: list[Frame],
+    ) -> dict:
         """
         Formats data structure from COMPAS Class Objects.
 
         Parameters
         ----------
-        assembly : :class:`compas.datastructures.Assembly` or :class:`compas_timber.assembly.TimberAssembly`
+        assembly
             The assembly in which data will be extracted from.
-        building_plan : :class:`compas_timber.planning.BuildingPlan`
+        building_plan
             The BuildingPlan in which data will be extracted from.
-        qr_frames_list : list of :class:`compas.geometry.Frame`
+        qr_frames_list
             List of frames at specific locations for application localization data.
-
-        Returns
-        -------
-        None
 
         """
         qr_assembly = AssemblyExtensions().create_qr_assembly(qr_frames_list)
@@ -91,106 +91,87 @@ class ProjectManager(object):
             }
         return data
 
-    def upload_data_to_project(self, data, project_name, data_name):
+    def upload_data_to_project(self, data: Any, project_name: str, data_name: str) -> None:
         """
         Uploads data to the Firebase RealtimeDatabase under the specified project name.
 
         Parameters
         ----------
-        data : Any should be json serializable
+        data
             The data to be uploaded.
-        project_name : str
+        project_name
             The name of the project under which the data will be stored.
-        data_name : str
+        data_name
             The name of the child in which data will be stored.
-
-        Returns
-        -------
-        None
-
         """
         path = "{}/{}".format(project_name, data_name)
         self.database.upload_data(data, path)
 
-    def upload_project_data_from_compas(self, project_name, assembly, building_plan, qr_frames_list):
+    def upload_project_data_from_compas(
+        self,
+        project_name: str,
+        assembly: Union[TimberAssembly, Assembly],
+        building_plan: BuildingPlan,
+        qr_frames_list: list[Frame],
+    ) -> None:
         """
         Formats data structure from COMPAS Class Objects and uploads them to the RealtimeDatabase under project name.
 
         Parameters
         ----------
-        assembly : :class:`compas.datastructures.Assembly` or :class:`compas_timber.assembly.TimberAssembly`
-            The assembly in which data will be extracted from.
-        building_plan : :class:`compas_timber.planning.BuildingPlan`
-            The BuildingPlan in which data will be extracted from.
-        qr_frames_list : list of :class:`compas.geometry.Frame`
-            List of frames at specific locations for application localization data.
-        project_name : str
+        project_name
             The name of the project under which the data will be stored.
-
-        Returns
-        -------
-        None
-
+        assembly
+            The assembly in which data will be extracted from.
+        building_plan
+            The BuildingPlan in which data will be extracted from.
+        qr_frames_list
+            List of frames at specific locations for application localization data.
         """
         data = self.create_project_data_from_compas(assembly, building_plan, qr_frames_list)
         self.database.upload_data(data, project_name)
 
-    def upload_qr_frames_to_project(self, project_name, qr_frames_list):
+    def upload_qr_frames_to_project(self, project_name: str, qr_frames_list: list[Frame]) -> None:
         """
         Uploads QR Frames to the Firebase RealtimeDatabase under the specified project name.
 
         Parameters
         ----------
-        qr_frames_list : list of :class:`compas.geometry.Frame`
-            List of frames at specific locations for application localization data.
         project_name : str
             The name of the project under which the data will be stored.
-
-        Returns
-        -------
-        None
-
+        qr_frames_list : list[Frame]
+            List of frames at specific locations for application localization data.
         """
         qr_assembly = AssemblyExtensions().create_qr_assembly(qr_frames_list)
         data = qr_assembly.__data__
         path = "{}/{}".format(project_name, "QRFrames")
         self.database.upload_data(data, path)
 
-    def upload_obj_to_storage(self, path_local, storage_folder_name):
+    def upload_obj_to_storage(self, path_local: str, storage_folder_name: str) -> None:
         """
         Upload an .obj file to the Firebase Storage under the specified storage folder name.
 
         Parameters
         ----------
-        file_path : str
+        path_local
             The path at which the obj file is stored.
-        storage_folder_name : str
+        storage_folder_name
             The name of the storage folder where the .obj file will be uploaded.
-
-        Returns
-        -------
-        None
-
         """
         file_name = os.path.basename(path_local)
         storage_path = "obj_storage/{}/{}".format(storage_folder_name, file_name)
         self.storage.upload_file_as_bytes_to_path(path_local, storage_path)
 
-    def upload_objs_from_directory_to_storage(self, local_directory, storage_folder_name):
+    def upload_objs_from_directory_to_storage(self, local_directory: str, storage_folder_name: str) -> None:
         """
         Uploads all .obj files from a directory to the Firebase Storage under the specified storage folder name.
 
         Parameters
         ----------
-        directory_path : str
+        local_directory
             The path to the directory where the projects .obj files are stored.
-        storage_folder_name : str
+        storage_folder_name
             The name of the storage folder where the .obj files will be uploaded.
-
-        Returns
-        -------
-        None
-
         """
         if not os.path.exists(local_directory) or not os.path.isdir(local_directory):
             raise FileNotFoundError("Directory not found: {}".format(local_directory))
@@ -201,80 +182,79 @@ class ProjectManager(object):
                 storage_path = "obj_storage/{}/{}".format(storage_folder_name, file_name)
                 self.storage.upload_file_as_bytes_to_path(local_path, storage_path)
 
-    def get_project_data(self, project_name):
+    def get_project_data(self, project_name: str) -> dict:
         """
         Retrieves data from the Firebase RealtimeDatabase under the specified project name.
 
         Parameters
         ----------
-        project_name : str
+        project_name
             The name of the project under which the data will be stored.
 
         Returns
         -------
-        data : dict
+        dict
             The data retrieved from the database at the point of fetching.
-
         """
         return self.database.get_data(project_name)
 
-    def upload_compas_object_to_storage(self, compas_object, cloud_file_name, pretty=True):
+    def upload_compas_object_to_storage(self, compas_object: Any, cloud_file_name: str, pretty: bool = True) -> None:
         """
         Uploads an assembly to the Firebase Storage.
 
         Parameters
         ----------
-        compas_object : Any
+        compas_object
             Any compas class instance that is serializable.
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file. Saved in JSON format, and needs to have a .json extension.
-
-        Returns
-        -------
-        None
 
         """
         self.storage.upload_data(compas_object, cloud_file_name, pretty=pretty)
 
-    def get_assembly_from_storage(self, cloud_file_name):
+    def get_assembly_from_storage(self, cloud_file_name: str) -> Union[TimberAssembly, Assembly]:
         """
         Retrieves an assembly from the Firebase Storage.
 
         Parameters
         ----------
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file.
 
         Returns
         -------
-        assembly : :class:`compas.datastructures.Assembly` or :class:`compas_timber.assembly.TimberAssembly`
+        Union[TimberAssembly, Assembly]
             The assembly retrieved from the storage.
 
         """
         return self.storage.get_data(cloud_file_name)
 
-    def edit_step_on_database(self, project_name, key, actor, is_built, is_planned, priority):
+    def edit_step_on_database(
+        self,
+        project_name: str,
+        key: str,
+        actor: str,
+        is_built: bool,
+        is_planned: bool,
+        priority: int,
+    ) -> None:
         """
         Edits a building plan step in the Firebase RealtimeDatabase under the specified project name.
 
         Parameters
         ----------
-        project_name : str
+        project_name
             The name of the project under which the data will be stored.
-        key : str
+        key
             The key of the building plan step to be edited.
-        actor : str
+        actor
             The actor who will be performing the step.
-        is_built : bool
+        is_built
             A boolean that determines if the step is built.
-        is_planned : bool
+        is_planned
             A boolean that determines if the step is planned.
-        priority : int
+        priority
             The priority of the step.
-
-        Returns
-        -------
-        None
 
         """
         database_path = "{}/building_plan/data/steps/{}/data".format(project_name, key)
@@ -285,30 +265,34 @@ class ProjectManager(object):
         current_data["priority"] = priority
         self.database.upload_data(current_data, database_path)
 
-    def visualize_project_state_timbers(self, timber_assembly, project_name):
+    def visualize_project_state_timbers(
+        self,
+        timber_assembly: TimberAssembly,
+        project_name: str,
+    ) -> (int, list[Frame], list[Box], list[Box], list[Box], list[Box]):
         """
         Retrieves and visualizes data from the Firebase RealtimeDatabase under the specified project name.
 
         Parameters
         ----------
-        timber_assembly : :class:`compas_timbers.assembly.TimberAssembly`
+        timber_assembly
             The assembly in which the project is based off of: Used for part visulization.
-        project_name : str
+        project_name
             The name of the project under which the data will be stored.
 
         Returns
         -------
         last_built_index : int
             The index of the last built part in the project.
-        step_locations : list of :class:`compas.geometry.Frame`
+        step_locations : list[Frame]
             The locations of the building plan steps.
-        built_human : list of :class:`compas_timber.beam.Blank`
+        built_human : list[Box]
             The parts that have been built by a human.
-        unbuilt_human : list of :class:`compas_timber.beam.Blank`
+        unbuilt_human : list[Box]
             The parts that have not been built by a human.
-        built_robot : list of :class:`compas_timber.beam.Blank`
+        built_robot : list[Box]
             The parts that have been built by a robot.
-        unbuilt_robot : list of :class:`compas_timber.beam.Blank`
+        unbuilt_robot : list[Box]
             The parts that have not been built by a robot.
 
         """
@@ -362,13 +346,13 @@ class ProjectManager(object):
                     unbuilt_robot.append(part.blank)
         return last_built_index, step_locations, built_human, unbuilt_human, built_robot, unbuilt_robot
 
-    def visualize_project_state(self, assembly, project_name):
+    def visualize_project_state(self, assembly: Assembly, project_name: str):
         """
         Retrieves and visualizes data from the Firebase RealtimeDatabase under the specified project name.
 
         Parameters
         ----------
-        assembly : :class:`compas.datastructure.Assembly`
+        assembly
             The assembly in which the project is based off of: Used for part visulization.
         project_name : str
             The name of the project under which the data is stored.
@@ -377,15 +361,15 @@ class ProjectManager(object):
         -------
         last_built_index : int
             The index of the last built part in the project.
-        step_locations : list of :class:`compas.geometry.Frame`
+        step_locations : list[Frame]
             The locations of the building plan steps.
-        built_human : list of :class:`compas.datastructures.Part`
+        built_human : list[Part]
             The parts that have been built by a human.
-        unbuilt_human : list of :class:`compas.datastructures.Part`
+        unbuilt_human : list[Part]
             The parts that have not been built by a human.
-        built_robot : list of :class:`compas.datastructures.Part`
+        built_robot : list[Part]
             The parts that have been built by a robot.
-        unbuilt_robot : list of :class:`compas.datastructures.Part`
+        unbuilt_robot : list[Part]
             The parts that have not been built by a robot.
 
         """

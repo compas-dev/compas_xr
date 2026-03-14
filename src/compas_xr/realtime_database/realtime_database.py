@@ -1,9 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import json
 import os
+from typing import Any
+from typing import List
 
 import pyrebase
 from compas.data import json_dumps
@@ -20,7 +18,7 @@ class RealtimeDatabase:
 
     Parameters
     ----------
-    config_path : str
+    config_path
         The path to the Firebase configuration JSON file.
 
     Attributes
@@ -36,7 +34,7 @@ class RealtimeDatabase:
     _shared_database = None
     _INVALID_KEY_CHARS = set(".#$[]/")
 
-    def __init__(self, config_path):
+    def __init__(self, config_path: str):
         self.config_path = config_path
         self._ensure_database()
 
@@ -71,7 +69,7 @@ class RealtimeDatabase:
 
         Returns
         -------
-        :class: 'pyrebase.pyrebase.Database'
+        pyrebase.pyrebase.Database
             The constructed database reference.
 
         Raises
@@ -87,29 +85,26 @@ class RealtimeDatabase:
             reference = reference.child(part)
         return reference
 
-    def delete_data_from_reference(self, database_reference):
+    def delete_data_from_reference(self, database_reference: pyrebase.pyrebase.Database) -> None:
         """
         Method for deleting data from a constructed database reference.
 
         Parameters
         ----------
-        database_reference: 'pyrebase.pyrebase.Database'
+        database_reference
             Reference to the database location where the data will be deleted from.
 
-        Returns
-        -------
-        None
         """
         self._ensure_database()
         database_reference.remove()
 
-    def get_data_from_reference(self, database_reference):
+    def get_data_from_reference(self, database_reference: pyrebase.pyrebase.Database) -> dict:
         """
         Method for retrieving data from a constructed database reference.
 
         Parameters
         ----------
-        database_reference: 'pyrebase.pyrebase.Database'
+        database_reference
             Reference to the database location where the data will be retreived from.
 
         Returns
@@ -173,7 +168,7 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        data : Any
+        data
             The data to be uploaded, needs to be JSON serializable.
         path : str
             The path under which the data will be stored.
@@ -192,7 +187,7 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        path_local : str
+        path_local
             The local path in which the data is stored as a json file.
         path : str
             The path under which the data will be stored.
@@ -220,7 +215,7 @@ class RealtimeDatabase:
 
         Returns
         -------
-        data : dict
+        dict
             The retrieved data in dictionary format.
 
         """

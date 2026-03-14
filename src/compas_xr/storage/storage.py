@@ -1,15 +1,17 @@
 import io
 import json
 import os
+from typing import Any
+from typing import Union
 
 import pyrebase
+from compas.data import Data
 from compas.data import json_dumps
 from compas.data import json_loads
 
 from compas_xr._path import validate_reference_path
 
 try:
-    # from urllib.request import urlopen
     from urllib.request import urlopen
 except ImportError:
     from urllib import urlopen
@@ -24,20 +26,18 @@ class Storage:
 
     Parameters
     ----------
-    config_path : str
+    config_path
         The path to the Firebase configuration JSON file.
 
     Attributes
     ----------
     config_path : str
         The path to the Firebase configuration JSON file.
-    _shared_storage : pyrebase.Storage, class attribute
-        The shared pyrebase.Storage instance representing the connection to the Firebase Storage.
     """
 
     _shared_storage = None
 
-    def __init__(self, config_path):
+    def __init__(self, config_path: str):
         self.config_path = config_path
         self._ensure_storage()
 
@@ -87,7 +87,7 @@ class Storage:
 
         Returns
         -------
-        :class: 'pyrebase.pyrebase.Storage'
+        pyrebase.pyrebase.Storage
             The constructed storage reference.
 
         """
@@ -98,18 +98,18 @@ class Storage:
             storage_reference = storage_reference.child(part)
         return storage_reference
 
-    def get_data_from_reference(self, storage_reference):
+    def get_data_from_reference(self, storage_reference: pyrebase.pyrebase.Storage) -> Union[dict, Data]:
         """
         Retrieves data from the specified storage reference.
 
         Parameters
         ----------
-        storage_reference : pyrebase.pyrebase.Storage
+        storage_reference
             The storage reference pointing to the desired data.
 
         Returns
         -------
-        data : dict or Compas Class Object
+        Union[dict, Data]
             The deserialized data retrieved from the storage reference.
 
         """
@@ -118,21 +118,16 @@ class Storage:
         deserialized_data = json_loads(data)
         return deserialized_data
 
-    def upload_bytes_to_reference_from_local_file(self, file_path, storage_reference):
+    def upload_bytes_to_reference_from_local_file(self, file_path: str, storage_reference: pyrebase.pyrebase.Storage) -> None:
         """
         Uploads data from bytes to the specified storage reference from a local file.
 
         Parameters
         ----------
-        file_path : str
+        file_path
             The path to the local file.
-        storage_reference : pyrebase.pyrebase.Storage
+        storage_reference
             The storage reference to upload the byte data to.
-
-        Returns
-        ------
-        None
-
         """
         if not os.path.exists(file_path):
             raise FileNotFoundError("File not found: {}".format(file_path))
@@ -140,17 +135,17 @@ class Storage:
             byte_data = file.read()
         storage_reference.put(byte_data)
 
-    def upload_data_to_reference(self, data, storage_reference, pretty=True):
+    def upload_data_to_reference(self, data: Any, storage_reference: Any, pretty: bool = True) -> None:
         """
         Uploads data to the specified storage reference.
 
         Parameters
         ----------
-        data : Any should be json serializable
+        data
             The data to be uploaded.
-        storage_reference : pyrebase.pyrebase.Storage
+        storage_reference
             The storage reference to upload the data to.
-        pretty : bool, optional
+        pretty
             Whether to format the JSON data with indentation and line breaks (default is True).
 
         Returns
@@ -168,7 +163,7 @@ class Storage:
 
         Parameters
         ----------
-        data : Any
+        data
             The data to be uploaded, needs to be JSON serializable.
         path : str
             The path under which the data will be stored.
@@ -183,20 +178,16 @@ class Storage:
         storage_reference = self.construct_reference(path)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_data_from_json(self, path_local, pretty=True):
+    def upload_data_from_json(self, path_local: str, pretty: bool = True):
         """
         Uploads data to the Firebase Storage from JSON file.
 
         Parameters
         ----------
-        path_local : str (path)
+        path_local
             The local path at which the JSON file is stored.
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
-
-        Returns
-        -------
-        None
+        pretty
+            A boolean that determines if the data should be formatted for readability.
 
         """
         if not os.path.exists(path_local):
@@ -213,13 +204,8 @@ class Storage:
 
         Parameters
         ----------
-        file_path : str
+        file_path
             The local path of the file to be uploaded.
-
-        Returns
-        -------
-        None
-
         """
         if not os.path.exists(file_path):
             raise FileNotFoundError("File not found: {}".format(file_path))
@@ -233,7 +219,7 @@ class Storage:
 
         Parameters
         ----------
-        file_path : str
+        file_path
             The local path of the file to be uploaded.
         path : str
             The path under which the file will be stored.
@@ -259,7 +245,7 @@ class Storage:
 
         Returns
         -------
-        data : dict or Compas Class Object
+        Union[dict, Data]
             The retrieved data in dictionary format or as Compas Class Object.
 
         """
@@ -276,8 +262,8 @@ class Storage:
             The storage path.
         path_local : str (path)
             The local path at which the JSON file will be stored.
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
+        pretty
+            A boolean that determines if the data should be formatted for readability.
 
         Returns
         -------

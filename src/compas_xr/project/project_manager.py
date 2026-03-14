@@ -3,7 +3,6 @@ from typing import Any
 from typing import Union
 
 from compas.datastructures import Assembly
-from compas.datastructures import Part
 from compas.geometry import Box
 from compas.geometry import Frame
 from compas_timber.assembly import TimberAssembly

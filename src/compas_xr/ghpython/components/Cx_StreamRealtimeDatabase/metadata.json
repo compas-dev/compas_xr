@@ -1,0 +1,51 @@
+{
+    "name": "Stream RealtimeDatabase",
+    "nickname": "RTDB Stream",
+    "category": "COMPAS XR",
+    "subcategory": "0 Firebase",
+    "description": "Stream data from Firebase Realtime Database with optional full-node output.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "iconDisplay": 2,
+        "inputParameters": [
+            {
+                "name": "config_filepath",
+                "description": "Path to Firebase Realtime Database configuration JSON file."
+            },
+            {
+                "name": "path",
+                "description": "Realtime Database path to stream."
+            },
+            {
+                "name": "stream",
+                "description": "Turn stream ON or OFF.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "return_full_data",
+                "description": "If true, output full subtree at subscribed path; if false, output raw event delta.",
+                "typeHintID": "bool"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "event",
+                "description": "Stream event type (for example put/patch)."
+            },
+            {
+                "name": "event_path",
+                "description": "Path in the streamed node where the event occurred."
+            },
+            {
+                "name": "data",
+                "description": "Event payload (delta or full subtree depending on return_full_data)."
+            },
+            {
+                "name": "status",
+                "description": "Worker and stream status."
+            }
+        ]
+    }
+}

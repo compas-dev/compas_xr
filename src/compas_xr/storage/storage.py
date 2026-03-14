@@ -41,7 +41,7 @@ class Storage:
         self.config_path = config_path
         self._ensure_storage()
 
-    def _ensure_storage(self):
+    def _ensure_storage(self) -> None:
         """
         Ensures that the storage connection is established.
         If the connection is not yet established, it initializes it.
@@ -60,7 +60,7 @@ class Storage:
         if not Storage._shared_storage:
             raise Exception("Could not initialize storage!")
 
-    def _get_file_from_remote(self, url):
+    def _get_file_from_remote(self, url: str) -> str:
         """
         This function is used to get the information form the source url and returns a string
         It also checks if the data is None or == null (firebase return if no data)
@@ -76,7 +76,7 @@ class Storage:
         else:
             raise Exception("unable to get file from url {}".format(url))
 
-    def construct_reference(self, path):
+    def construct_reference(self, path: str) -> pyrebase.pyrebase.Storage:
         """
         Constructs a storage reference from a slash-delimited path.
 
@@ -157,7 +157,7 @@ class Storage:
         file_object = io.BytesIO(serialized_data.encode())
         storage_reference.put(file_object)
 
-    def upload_data(self, data, path, pretty=True):
+    def upload_data(self, data: Any, path: str, pretty: bool = True) -> None:
         """
         Uploads data to the Firebase Storage at the specified path.
 
@@ -178,7 +178,7 @@ class Storage:
         storage_reference = self.construct_reference(path)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_data_from_json(self, path_local: str, pretty: bool = True):
+    def upload_data_from_json(self, path_local: str, pretty: bool = True) -> None:
         """
         Uploads data to the Firebase Storage from JSON file.
 
@@ -198,7 +198,7 @@ class Storage:
         storage_reference = self.construct_reference(cloud_file_name)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_file_as_bytes(self, file_path):
+    def upload_file_as_bytes(self, file_path: str) -> None:
         """
         Uploads a file as bytes to the Firebase Storage.
 
@@ -213,7 +213,7 @@ class Storage:
         storage_reference = self.construct_reference(file_name)
         self.upload_bytes_to_reference_from_local_file(file_path, storage_reference)
 
-    def upload_file_as_bytes_to_path(self, file_path, path):
+    def upload_file_as_bytes_to_path(self, file_path: str, path: str) -> None:
         """
         Uploads a file as bytes to the Firebase Storage to the specified path.
 
@@ -234,7 +234,7 @@ class Storage:
         storage_reference = self.construct_reference(path)
         self.upload_bytes_to_reference_from_local_file(file_path, storage_reference)
 
-    def get_data(self, path):
+    def get_data(self, path: str) -> Union[dict, Data]:
         """
         Retrieves data from the Firebase Storage for the specified path.
 
@@ -252,7 +252,7 @@ class Storage:
         storage_reference = self.construct_reference(path)
         return self.get_data_from_reference(storage_reference)
 
-    def download_data_to_json(self, path, path_local, pretty=True):
+    def download_data_to_json(self, path: str, path_local: str, pretty: bool = True) -> None:
         """
         Downloads data from the Firebase Storage for the specified path.
 

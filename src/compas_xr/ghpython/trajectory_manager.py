@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class TrajectoryResultManager:
     """Manager for trajectory results."""
 
@@ -8,10 +11,11 @@ class TrajectoryResultManager:
     pick_index = None
     end_effector_link_name = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Planning result for element {} with {} points".format(self.requested_element_id, len(self.trajectory.points))
 
-    def format_trajectory(self, trajectory):
+    def format_trajectory(self, trajectory: Any) -> list[dict]:
+        """Formats a trajectory and returns it as a list of dictionary of joint values."""
         configs_dicts = []
         if trajectory:
             for point in trajectory.points:

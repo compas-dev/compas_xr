@@ -1,3 +1,7 @@
+from typing import Union
+
+from compas.datastructures import Assembly
+from compas_timber.assembly import TimberAssembly
 from compas_timber.planning import BuildingPlan
 from compas_timber.planning import SimpleSequenceGenerator
 from compas_timber.planning import Step
@@ -5,32 +9,37 @@ from compas_timber.planning import Step
 
 class BuildingPlanExtensions:
     """
-    BuildingPlanExtensions is a class for extending the functionality of the :class:`~compas_timber.planning.BuildingPlan` class.
+    Extensions for the [BuildingPlan][] class.
 
-    The BuildingPlanExtensions class provides additional functionalities to the :class:`~compas_timber.planning.BuildingPlan`
-    by providing a way to create a buildling plan from an established assembly sequence.
+    This class provides functionalities to create a building plan from an established assembly sequence.
     """
 
     # TODO: This makes the building plan in a very manual way
     # TODO: but this needs to be resolved in tandem with building plan revisions.
-    def create_buildingplan_from_assembly_sequence(self, assembly, data_type, robot_keys, priority_keys_lists):
+    def create_buildingplan_from_assembly_sequence(
+        self,
+        assembly: Union[TimberAssembly, Assembly],
+        data_type: int,
+        robot_keys: list[str] = None,
+        priority_keys_lists: list[list[str]] = None,
+    ) -> BuildingPlan:
         """
-        Create a compas_timber.planning.BuildingPlan based on the sequence of the assembly parts.
+        Create a [BuildingPlan][] based on the sequence of the assembly parts.
 
         Parameters
         ----------
-        assembly : :class:`~compas_timber.assembly.TimberAssembly` or :class:`~compas.datastructures.Assembly`
+        assembly
             The assembly that you want to generate the buiding plan for.
-        data_type : int
+        data_type
             List index of which data type will be loaded on the application side [0: 'Cylinder', 1: 'Box', 2: 'ObjFile']
-        robot_keys : list of str
+        robot_keys
             List of keys that are intended to be built by the robot.
-        priority_keys_lists : list of list of str
+        priority_keys_lists
             List in assembly order of lists of assembly keys that can be built in parallel.
 
         Returns
         -------
-        building_plan : :class:`~compas_timber.planning.BuildingPlan`
+        [BuildingPlan][]
             The building plan generated from the assembly sequence.
 
         """
@@ -58,26 +67,33 @@ class BuildingPlanExtensions:
 
         return building_plan
 
-    def create_buildingplan_from_with_custom_sequence(self, assembly, sequenced_keys, data_type, robot_keys, priority_keys_lists):
+    def create_buildingplan_from_with_custom_sequence(
+        self,
+        assembly: Union[TimberAssembly, Assembly],
+        sequenced_keys: list[str],
+        data_type: int,
+        robot_keys: list[str],
+        priority_keys_lists: list[list[str]],
+    ) -> BuildingPlan:
         """
-        Create a compas_timber.planning.BuildingPlan based on the sequence of the assembly parts.
+        Create a [BuildingPlan][] based on the sequence of the assembly parts.
 
         Parameters
         ----------
-        assembly : compas_timber.assembly.TimberAssembly or compas.datastructures.Assembly
+        assembly
             The assembly that you want to generate the buiding plan for.
-        sequenced_keys : list of str
+        sequenced_keys
             List of keys that are intended to be built in the order provided.
-        data_type : int
+        data_type
             List index of which data type will be loaded on the application side [0: 'Cylinder', 1: 'Box', 2: 'ObjFile']
-        robot_keys : list of str
+        robot_keys
             List of keys that are intended to be built by the robot.
-        priority_keys_lists : list of list of str
+        priority_keys_lists
             List in assembly order of lists of assembly keys that can be built in parallel.
 
         Returns
         -------
-        building_plan : compas_timber.planning.BuildingPlan
+        [BuildingPlan][]
             The building plan generated from the assembly sequence.
 
         """

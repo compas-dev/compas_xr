@@ -3,18 +3,18 @@ class MqttMessageOptionsXR:
 
     Parameters
     ----------
-    host : str
+    host
         MQTT broker host.
-    project_name : str
+    project_name
         Name of the project.
-    robot_name : str
+    robot_name
         Name of the robot.
     """
 
-    def __init__(self, host, project_name, robot_name):
+    def __init__(self, host: str, project_name: str, robot_name: str):
         self.host = host
         self.project_name = project_name
         self.robot_name = robot_name
 
-    def __str__(self):
-        return "Options, host={}, project_name={}, robot_name={}".format(self.host, self.project_name, self.robot_name)
+    def __str__(self) -> str:
+        return f"Options, host={self.host}, project_name={self.project_name}, robot_name={self.robot_name}"

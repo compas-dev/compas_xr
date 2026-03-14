@@ -1,13 +1,15 @@
 import io
 import json
 import os
+from typing import Any
+from typing import Union
 
 import pyrebase
+from compas.data import Data
 from compas.data import json_dumps
 from compas.data import json_loads
 
 try:
-    # from urllib.request import urlopen
     from urllib.request import urlopen
 except ImportError:
     from urllib import urlopen
@@ -22,20 +24,18 @@ class Storage:
 
     Parameters
     ----------
-    config_path : str
+    config_path
         The path to the Firebase configuration JSON file.
 
     Attributes
     ----------
     config_path : str
         The path to the Firebase configuration JSON file.
-    _shared_storage : pyrebase.Storage, class attribute
-        The shared pyrebase.Storage instance representing the connection to the Firebase Storage.
     """
 
     _shared_storage = None
 
-    def __init__(self, config_path):
+    def __init__(self, config_path: str):
         self.config_path = config_path
         self._ensure_storage()
 
@@ -74,54 +74,54 @@ class Storage:
         else:
             raise Exception("unable to get file from url {}".format(url))
 
-    def construct_reference(self, cloud_file_name):
+    def construct_reference(self, cloud_file_name: str) -> pyrebase.pyrebase.Storage:
         """
         Constructs a storage reference for the specified cloud file name.
 
         Parameters
         ----------
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file.
 
         Returns
         -------
-        :class: 'pyrebase.pyrebase.Storage'
+        pyrebase.pyrebase.Storage
             The constructed storage reference.
 
         """
         return Storage._shared_storage.child(cloud_file_name)
 
-    def construct_reference_with_folder(self, cloud_folder_name, cloud_file_name):
+    def construct_reference_with_folder(self, cloud_folder_name: str, cloud_file_name: str) -> pyrebase.pyrebase.Storage:
         """
         Constructs a storage reference for the specified cloud folder name and file name.
 
         Parameters
         ----------
-        cloud_folder_name : str
+        cloud_folder_name
             The name of the cloud folder.
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file.
 
         Returns
         -------
-        :class: 'pyrebase.pyrebase.Storage'
+        pyrebase.pyrebase.Storage
             The constructed storage reference.
 
         """
         return Storage._shared_storage.child(cloud_folder_name).child(cloud_file_name)
 
-    def construct_reference_from_list(self, cloud_path_list):
+    def construct_reference_from_list(self, cloud_path_list: list[str]) -> pyrebase.pyrebase.Storage:
         """
         Constructs a storage reference for consecutive cloud folders in list order.
 
         Parameters
         ----------
-        cloud_path_list : list of str
+        cloud_path_list
             The list of cloud path names.
 
         Returns
         -------
-        :class: 'pyrebase.pyrebase.Storage'
+        pyrebase.pyrebase.Storage
             The constructed storage reference.
 
         """
@@ -130,18 +130,18 @@ class Storage:
             storage_reference = storage_reference.child(path)
         return storage_reference
 
-    def get_data_from_reference(self, storage_reference):
+    def get_data_from_reference(self, storage_reference: pyrebase.pyrebase.Storage) -> Union[dict, Data]:
         """
         Retrieves data from the specified storage reference.
 
         Parameters
         ----------
-        storage_reference : pyrebase.pyrebase.Storage
+        storage_reference
             The storage reference pointing to the desired data.
 
         Returns
         -------
-        data : dict or Compas Class Object
+        Union[dict, Data]
             The deserialized data retrieved from the storage reference.
 
         """
@@ -150,21 +150,16 @@ class Storage:
         deserialized_data = json_loads(data)
         return deserialized_data
 
-    def upload_bytes_to_reference_from_local_file(self, file_path, storage_reference):
+    def upload_bytes_to_reference_from_local_file(self, file_path: str, storage_reference: pyrebase.pyrebase.Storage) -> None:
         """
         Uploads data from bytes to the specified storage reference from a local file.
 
         Parameters
         ----------
-        file_path : str
+        file_path
             The path to the local file.
-        storage_reference : pyrebase.pyrebase.Storage
+        storage_reference
             The storage reference to upload the byte data to.
-
-        Returns
-        ------
-        None
-
         """
         if not os.path.exists(file_path):
             raise FileNotFoundError("File not found: {}".format(file_path))
@@ -172,17 +167,17 @@ class Storage:
             byte_data = file.read()
         storage_reference.put(byte_data)
 
-    def upload_data_to_reference(self, data, storage_reference, pretty=True):
+    def upload_data_to_reference(self, data: Any, storage_reference: Any, pretty: bool = True) -> None:
         """
         Uploads data to the specified storage reference.
 
         Parameters
         ----------
-        data : Any should be json serializable
+        data
             The data to be uploaded.
-        storage_reference : pyrebase.pyrebase.Storage
+        storage_reference
             The storage reference to upload the data to.
-        pretty : bool, optional
+        pretty
             Whether to format the JSON data with indentation and line breaks (default is True).
 
         Returns
@@ -194,41 +189,32 @@ class Storage:
         file_object = io.BytesIO(serialized_data.encode())
         storage_reference.put(file_object)
 
-    def upload_data(self, data, cloud_file_name, pretty=True):
+    def upload_data(self, data: Any, cloud_file_name: str, pretty: bool = True) -> None:
         """
         Uploads data to the Firebase Storage under specified cloud file name.
 
         Parameters
         ----------
-        data : Any
+        data
             The data to be uploaded, needs to be JSON serializable.
-        cloud_file_name : str
+        cloud_file_name
             The name of the reference under which the data will be stored file type should be specified.(ex: .json)
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
-
-        Returns
-        -------
-        None
-
+        pretty
+            A boolean that determines if the data should be formatted for readability.
         """
         storage_reference = self.construct_reference(cloud_file_name)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_data_from_json(self, path_local, pretty=True):
+    def upload_data_from_json(self, path_local: str, pretty: bool = True):
         """
         Uploads data to the Firebase Storage from JSON file.
 
         Parameters
         ----------
-        path_local : str (path)
+        path_local
             The local path at which the JSON file is stored.
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
-
-        Returns
-        -------
-        None
+        pretty
+            A boolean that determines if the data should be formatted for readability.
 
         """
         if not os.path.exists(path_local):
@@ -239,63 +225,48 @@ class Storage:
         storage_reference = self.construct_reference(cloud_file_name)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_data_to_folder(self, data, cloud_folder_name, cloud_file_name, pretty=True):
+    def upload_data_to_folder(self, data: Any, cloud_folder_name: str, cloud_file_name: str, pretty: bool = True):
         """
         Uploads data to the Firebase Storage under specified cloud folder name in cloud file name.
 
         Parameters
         ----------
-        data : Any
+        data
             The data to be uploaded, needs to be JSON serializable.
-        cloud_folder_name : str
+        cloud_folder_name
             The name of the folder under which the data will be stored.
-        cloud_file_name : str
+        cloud_file_name
             The name of the reference under which the data will be stored file type should be specified.(ex: .json)
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
-
-        Returns
-        -------
-        None
-
+        pretty
+            A boolean that determines if the data should be formatted for readability.
         """
         storage_reference = self.construct_reference_with_folder(cloud_folder_name, cloud_file_name)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_data_to_deep_reference(self, data, cloud_path_list, pretty=True):
+    def upload_data_to_deep_reference(self, data: Any, cloud_path_list: list[str], pretty: bool = True):
         """
         Uploads data to the Firebase Storage under specified reference names in list order.
 
         Parameters
         ----------
-        data : Any
+        data
             The data to be uploaded, needs to be JSON serializable.
-        cloud_path_list : list of str
+        cloud_path_list
             The list of reference names under which the data will be stored file type should be specified.(ex: .json)
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
-
-        Returns
-        -------
-        None
-
+        pretty
+            A boolean that determines if the data should be formatted for readability.
         """
         storage_reference = self.construct_reference_from_list(cloud_path_list)
         self.upload_data_to_reference(data, storage_reference, pretty)
 
-    def upload_file_as_bytes(self, file_path):
+    def upload_file_as_bytes(self, file_path: str) -> None:
         """
         Uploads a file as bytes to the Firebase Storage.
 
         Parameters
         ----------
-        file_path : str
+        file_path
             The local path of the file to be uploaded.
-
-        Returns
-        -------
-        None
-
         """
         if not os.path.exists(file_path):
             raise FileNotFoundError("File not found: {}".format(file_path))
@@ -303,15 +274,15 @@ class Storage:
         storage_reference = self.construct_reference(file_name)
         self.upload_bytes_to_reference_from_local_file(file_path, storage_reference)
 
-    def upload_file_as_bytes_to_deep_reference(self, file_path, cloud_path_list):
+    def upload_file_as_bytes_to_deep_reference(self, file_path: str, cloud_path_list: list[str]):
         """
         Uploads a file as bytes to the Firebase Storage to specified cloud path.
 
         Parameters
         ----------
-        file_path : str
+        file_path
             The local path of the file to be uploaded.
-        cloud_path_list : list of str
+        cloud_path_list
             The list of reference names under which the file will be stored.
 
         Returns
@@ -328,15 +299,15 @@ class Storage:
         storage_reference = self.construct_reference_from_list(new_path_list)
         self.upload_bytes_to_reference_from_local_file(file_path, storage_reference)
 
-    def upload_files_as_bytes_from_directory_to_deep_reference(self, directory_path, cloud_path_list):
+    def upload_files_as_bytes_from_directory_to_deep_reference(self, directory_path: str, cloud_path_list: list[str]):
         """
         Uploads all files in specified directory as bytes to the Firebase Storage at specified cloud path in list order.
 
         Parameters
         ----------
-        directory_path : str
+        directory_path
             The local path of the directory in which files are stored.
-        cloud_path_list : list of str
+        cloud_path_list
             The list of reference names under which the file will be stored.
 
         Returns
@@ -350,13 +321,13 @@ class Storage:
             file_path = os.path.join(directory_path, file_name)
             self.upload_file_as_bytes_to_deep_reference(file_path, cloud_path_list)
 
-    def get_data(self, cloud_file_name):
+    def get_data(self, cloud_file_name: str):
         """
         Retrieves data from the Firebase Storage for specified cloud file name.
 
         Parameters
         ----------
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file.
 
         Returns
@@ -368,58 +339,56 @@ class Storage:
         storage_reference = self.construct_reference(cloud_file_name)
         return self.get_data_from_reference(storage_reference)
 
-    def get_data_from_folder(self, cloud_folder_name, cloud_file_name):
+    def get_data_from_folder(self, cloud_folder_name: str, cloud_file_name: str) -> Union[dict, Data]:
         """
         Retrieves data from the Firebase Storage for specified cloud folder name and cloud file name.
 
         Parameters
         ----------
-        cloud_folder_name : str
+        cloud_folder_name
             The name of the cloud folder.
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file.
 
         Returns
         -------
-        data : dict or Compas Class Object
+        Union[dict, Data]
             The retrieved data in dictionary format or as Compas Class Object.
 
         """
         storage_reference = self.construct_reference_with_folder(cloud_folder_name, cloud_file_name)
         return self.get_data_from_reference(storage_reference)
 
-    def get_data_from_deep_reference(self, cloud_path_list):
+    def get_data_from_deep_reference(self, cloud_path_list: str) -> Union[dict, Data]:
         """
         Retrieves data from the Firebase Storage for specified cloud folder name and cloud file name.
 
         Parameters
         ----------
-        cloud_folder_name : str
-            The name of the cloud folder.
-        cloud_file_name : str
-            The name of the cloud file.
+        cloud_path_list
+            The list of reference names under which the file is stored.
 
         Returns
         -------
-        data : dict or Compas Class Object
+        Union[dict, Data]
             The retrieved data in dictionary format or as Compas Class Object.
 
         """
         storage_reference = self.construct_reference_from_list(cloud_path_list)
         return self.get_data_from_reference(storage_reference)
 
-    def download_data_to_json(self, cloud_file_name, path_local, pretty=True):
+    def download_data_to_json(self, cloud_file_name: str, path_local: str, pretty: bool = True):
         """
         Downloads data from the Firebase Storage for specified cloud file name.
 
         Parameters
         ----------
-        cloud_file_name : str
+        cloud_file_name
             The name of the cloud file.
-        path_local : str (path)
+        path_local
             The local path at which the JSON file will be stored.
-        pretty : bool, optional
-            A boolean that determines if the data should be formatted for readability. Default is True.
+        pretty
+            A boolean that determines if the data should be formatted for readability.
 
         Returns
         -------

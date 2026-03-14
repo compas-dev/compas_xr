@@ -1,3 +1,4 @@
+# r: compas_xr>=2.0.0
 """
 Settings for Firebase.
 
@@ -7,12 +8,12 @@ COMPAS XR v1.0.0
 import json
 import os
 
-from ghpythonlib.componentbase import executingcomponent as component
+import Grasshopper
 
 from compas_xr.ghpython.firebase_config import FirebaseConfig
 
 
-class FirebaseConfigComponent(component):
+class FirebaseConfigComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(self, filepath, filename, api_key, auth_domain, database_url, storage_bucket):
         if not (api_key and auth_domain and database_url and storage_bucket):
             self.Message = "You are missing some config information"

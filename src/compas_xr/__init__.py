@@ -1,24 +1,3 @@
-"""
-********************************************************************************
-compas_xr
-********************************************************************************
-
-.. currentmodule:: compas_xr
-
-
-.. toctree::
-    :maxdepth: 1
-
-    compas_xr.ghpython
-    compas_xr.mqtt
-    compas_xr.project
-    compas_xr.realtime_database
-    compas_xr.storage
-
-"""
-
-from __future__ import print_function
-
 import os
 
 __author__ = ["Joseph Kenny"]
@@ -31,5 +10,4 @@ __version__ = "1.0.0"
 HERE = os.path.dirname(__file__)
 DATA = os.path.abspath(os.path.join(HERE, "data"))
 
-__all_plugins__ = ["compas_xr.rhino.install"]
 __all__ = ["HERE", "DATA"]

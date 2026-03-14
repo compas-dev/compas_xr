@@ -1,6 +1,7 @@
 import json
 import os
 from typing import Any
+from typing import Callable
 from typing import List
 
 import pyrebase
@@ -38,7 +39,7 @@ class RealtimeDatabase:
         self.config_path = config_path
         self._ensure_database()
 
-    def _ensure_database(self):
+    def _ensure_database(self) -> None:
         """
         Ensures that the database connection is established.
         If the connection is not yet established, it initializes it.
@@ -58,7 +59,7 @@ class RealtimeDatabase:
         if not RealtimeDatabase._shared_database:
             raise Exception("Could not initialize database!")
 
-    def construct_reference(self, path):
+    def construct_reference(self, path: str) -> pyrebase.pyrebase.Database:
         """
         Constructs a database reference from a slash-delimited path.
 
@@ -119,10 +120,10 @@ class RealtimeDatabase:
         data_dict = dict(data)
         return data_dict
 
-    def stream_data_from_reference(self, callback, database_reference):
+    def stream_data_from_reference(self, callback: Callable, database_reference: pyrebase.pyrebase.Database) -> Any:
         raise NotImplementedError("Function Under Developement")
 
-    def stream_data(self, path, callback):
+    def stream_data(self, path: str, callback: Callable) -> Any:
         """
         Streams data from the Firebase Realtime Database at the specified path.
 
@@ -142,7 +143,7 @@ class RealtimeDatabase:
         database_reference = self.construct_reference(path)
         return self.stream_data_from_reference(callback, database_reference)
 
-    def upload_data_to_reference(self, data, database_reference):
+    def upload_data_to_reference(self, data: Any, database_reference: pyrebase.pyrebase.Database) -> None:
         """
         Method for uploading data to a constructed database reference.
 
@@ -162,7 +163,7 @@ class RealtimeDatabase:
         json_string = json_dumps(data)
         database_reference.set(json.loads(json_string))
 
-    def upload_data(self, data, path):
+    def upload_data(self, data: Any, path: str) -> None:
         """
         Uploads data to the Firebase Realtime Database at the specified path.
 
@@ -181,7 +182,7 @@ class RealtimeDatabase:
         database_reference = self.construct_reference(path)
         self.upload_data_to_reference(data, database_reference)
 
-    def upload_data_from_file(self, path_local, path):
+    def upload_data_from_file(self, path_local: str, path: str) -> None:
         """
         Uploads data to the Firebase Realtime Database at the specified path from a file.
 
@@ -204,7 +205,7 @@ class RealtimeDatabase:
         database_reference = self.construct_reference(path)
         self.upload_data_to_reference(data, database_reference)
 
-    def get_data(self, path):
+    def get_data(self, path: str) -> dict:
         """
         Retrieves data from the Firebase Realtime Database at the specified path.
 
@@ -222,7 +223,7 @@ class RealtimeDatabase:
         database_reference = self.construct_reference(path)
         return self.get_data_from_reference(database_reference)
 
-    def delete_data(self, path):
+    def delete_data(self, path: str) -> None:
         """
         Deletes data from the Firebase Realtime Database at the specified path.
 

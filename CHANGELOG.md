@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 * Removed Support for IronPython 2.7 support
+* Refactored RealtimeDatabase and Storage Classes to path based references.
 * Removes dependency on `compas_fab`
 * Removed Rhino 7 post installation hooks
 

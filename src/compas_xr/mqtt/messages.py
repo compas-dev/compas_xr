@@ -2,12 +2,14 @@ import sys
 import threading
 import uuid
 from datetime import datetime
+from typing import Any
+from typing import Union
 
 from compas.geometry import Frame
 from compas_eve import Message
 
 
-class SequenceCounter(object):
+class SequenceCounter:
     """An atomic, thread-safe sequence increament counter that increments with each message."""
 
     ROLLOVER_THRESHOLD = sys.maxsize
@@ -17,7 +19,7 @@ class SequenceCounter(object):
         self._lock = threading.Lock()
         self._value = start
 
-    def increment(self, num=1):
+    def increment(self, num: int = 1):
         """Atomically increment the counter by ``num`` and
         return the new value.
         """
@@ -36,7 +38,7 @@ class SequenceCounter(object):
                 self._value = value
 
 
-class ResponseID(object):
+class ResponseID:
     """An atomic, thread-safe counter that increments with each service routine."""
 
     ROLLOVER_THRESHOLD = sys.maxsize
@@ -74,15 +76,15 @@ class Header(Message):
 
     Parameters
     ----------
-    increment_response_ID : bool, optional
+    increment_response_ID
         Whether to increment the response ID when creating a new instance of Header.
-    sequence_id : int, optional
+    sequence_id
         The sequence ID of the message. Optional for parsing.
-    response_id : int, optional
+    response_id
         The response ID of the message. Optional for parsing.
-    device_id : str, optional
+    device_id
         The device ID of the message. Optional for parsing.
-    time_stamp : str, optional
+    time_stamp
         The timestamp of the message. Optional for parsing.
 
     Attributes
@@ -103,7 +105,14 @@ class Header(Message):
     _shared_response_id_counter = None
     _device_id = None
 
-    def __init__(self, increment_response_ID=False, sequence_id=None, response_id=None, device_id=None, time_stamp=None):
+    def __init__(
+        self,
+        increment_response_ID: bool = False,
+        sequence_id: int = None,
+        response_id: int = None,
+        device_id: str = None,
+        time_stamp: str = None,
+    ):
         super(Header, self).__init__()
         self["sequence_id"] = sequence_id or self._ensure_sequence_id()
         self["response_id"] = response_id or self._ensure_response_id(increment_response_ID)
@@ -195,11 +204,11 @@ class GetTrajectoryRequest(Message):
 
     Parameters
     ----------
-    element_id : str
+    element_id
         The ID of the element associated with the trajectory.
-    robot_name : str
+    robot_name
         The name of the robot associated with the trajectory.
-    header : Header, optional
+    header : Header
         The header object containing additional message information.
 
     Attributes
@@ -214,7 +223,7 @@ class GetTrajectoryRequest(Message):
         The ID of the trajectory. Default is ``"trajectory_id_" + str(element_id)``.
     """
 
-    def __init__(self, element_id, robot_name, header=None, *args, **kwargs):
+    def __init__(self, element_id: str, robot_name: str, header: Header = None, *args, **kwargs):
         super(GetTrajectoryRequest, self).__init__(*args, **kwargs)
         self["header"] = header or Header(increment_response_ID=True)
         self["element_id"] = element_id
@@ -236,15 +245,15 @@ class GetTrajectoryResult(Message):
 
     Parameters
     ----------
-    element_id : str
+    element_id
         The ID of the element associated with the trajectory.
-    robot_name : str
+    robot_name
         The name of the robot associated with the trajectory.
-    robot_base_frame : compas.geometry.Frame
+    robot_base_frame
         The base frame of the robot.
-    trajectory : dict of joint names and joint values
+    trajectory
         The retrieved trajectory.
-    header : Header, optional
+    header
         The header object containing additional message information.
 
     Attributes
@@ -263,7 +272,17 @@ class GetTrajectoryResult(Message):
         The trajectory information computed for the request.
     """
 
-    def __init__(self, element_id, robot_name, robot_base_frame, trajectory, pick_and_place=False, pick_index=None, end_effector_link_name=None, header=None):
+    def __init__(
+        self,
+        element_id: str,
+        robot_name: str,
+        robot_base_frame: Frame,
+        trajectory: Union[dict, Any],
+        pick_and_place: bool = False,
+        pick_index: int = None,
+        end_effector_link_name: str = None,
+        header: Header = None,
+    ):
         super(GetTrajectoryResult, self).__init__()
         self["header"] = header or Header()
         self["element_id"] = element_id
@@ -299,15 +318,15 @@ class ApproveTrajectory(Message):
 
     Parameters
     ----------
-    element_id : str
+    element_id
         The ID of the element associated with the trajectory.
-    robot_name : str
+    robot_name
         The name of the robot associated with the trajectory.
-    trajectory : dict of joint names and joint values
+    trajectory
         The approved trajectory.
-    approval_status : int
+    approval_status
         The approval status of the trajectory.
-    header : Header, optional
+    header
         The header object containing additional message information.
 
     Attributes
@@ -327,7 +346,14 @@ class ApproveTrajectory(Message):
         0: Not Approved, 1: Approved, 2: Consensus Approval, 3: Cancelation.
     """
 
-    def __init__(self, element_id, robot_name, trajectory, approval_status, header=None):
+    def __init__(
+        self,
+        element_id: str,
+        robot_name: str,
+        trajectory: dict,
+        approval_status: int,
+        header: Header = None,
+    ):
         super(ApproveTrajectory, self).__init__()
         self["header"] = header or Header()
         self["element_id"] = element_id
@@ -357,9 +383,9 @@ class ApprovalCounterRequest(Message):
 
     Parameters
     ----------
-    element_id : str
+    element_id
         The ID of the element associated with the approval counter.
-    header : Header, optional
+    header
         The header object containing additional message information.
 
     Attributes
@@ -372,7 +398,7 @@ class ApprovalCounterRequest(Message):
         The ID of the trajectory. Default is ``"trajectory_id_" + str(element_id)``.
     """
 
-    def __init__(self, element_id, header=None):
+    def __init__(self, element_id: str, header: Header = None):
         super(ApprovalCounterRequest, self).__init__()
         self["header"] = header or Header()
         self["element_id"] = element_id
@@ -401,9 +427,9 @@ class ApprovalCounterResult(Message):
 
     Parameters
     ----------
-    element_id : str
+    element_id
         The ID of the element associated with the approval counter.
-    header : Header, optional
+    header
         The header object containing additional message information.
 
     Attributes
@@ -416,7 +442,7 @@ class ApprovalCounterResult(Message):
         The ID of the trajectory. Default is ``"trajectory_id_" + str(element_id)``.
     """
 
-    def __init__(self, element_id, header=None):
+    def __init__(self, element_id: str, header: Header = None):
         super(ApprovalCounterResult, self).__init__()
         self["header"] = header or Header()
         self["element_id"] = element_id
@@ -437,13 +463,13 @@ class SendTrajectory(Message):
 
     Parameters
     ----------
-    element_id : str
+    element_id
         The ID of the element associated with the trajectory.
-    robot_name : str
+    robot_name
         The name of the robot associated with the trajectory.
-    trajectory : dict of joint names and joint values
+    trajectory
         The trajectory to be sent.
-    header : Header, optional
+    header
         The header object containing additional message information.
 
     Attributes
@@ -460,7 +486,13 @@ class SendTrajectory(Message):
         The trajectory to be sent.
     """
 
-    def __init__(self, element_id, robot_name, trajectory, header=None):
+    def __init__(
+        self,
+        element_id: str,
+        robot_name: str,
+        trajectory: dict,
+        header: Header = None,
+    ):
         super(SendTrajectory, self).__init__()
         self["header"] = header or Header()
         self["element_id"] = element_id

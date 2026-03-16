@@ -1,16 +1,17 @@
+# r: compas_xr>=2.0.0
 """
 Application Settings.
 
 COMPAS XR v1.0.0
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+import Grasshopper
 
 from compas_xr.ghpython.app_settings import AppSettings
 from compas_xr.project import ProjectManager
 
 
-class ApplicationSettingsComponent(component):
+class ApplicationSettingsComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(self, config_filepath, project_name, storage_folder, z_to_y_remap, write):
         if not (config_filepath):
             self.Message = "Missing Config"

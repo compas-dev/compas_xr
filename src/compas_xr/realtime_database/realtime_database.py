@@ -64,7 +64,7 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        path : str
+        path
             A database path like "parent/child/grandchild".
 
         Returns
@@ -128,9 +128,9 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        path : str
+        path
             The path from which data should be streamed.
-        callback : callable
+        callback
             Callback used by the stream client.
 
         Returns
@@ -148,9 +148,9 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        data : Any
+        data
             The data to be uploaded. Data should be JSON serializable.
-        database_reference: 'pyrebase.pyrebase.Database'
+        database_reference
             Reference to the database location where the data will be uploaded.
 
         Returns
@@ -170,7 +170,7 @@ class RealtimeDatabase:
         ----------
         data
             The data to be uploaded, needs to be JSON serializable.
-        path : str
+        path
             The path under which the data will be stored.
 
         Returns
@@ -189,7 +189,7 @@ class RealtimeDatabase:
         ----------
         path_local
             The local path in which the data is stored as a json file.
-        path : str
+        path
             The path under which the data will be stored.
 
         Returns
@@ -210,7 +210,7 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        path : str
+        path
             The path under which the data is stored.
 
         Returns
@@ -228,7 +228,7 @@ class RealtimeDatabase:
 
         Parameters
         ----------
-        path : str
+        path
             The path that should be deleted.
 
         Returns

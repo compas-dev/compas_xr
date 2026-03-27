@@ -82,7 +82,7 @@ class Storage:
 
         Parameters
         ----------
-        path : str
+        path
             A storage path like "folder/subfolder/file.json".
 
         Returns
@@ -165,9 +165,9 @@ class Storage:
         ----------
         data
             The data to be uploaded, needs to be JSON serializable.
-        path : str
+        path
             The path under which the data will be stored.
-        pretty : bool, optional
+        pretty
             A boolean that determines if the data should be formatted for readability. Default is True.
 
         Returns
@@ -221,7 +221,7 @@ class Storage:
         ----------
         file_path
             The local path of the file to be uploaded.
-        path : str
+        path
             The path under which the file will be stored.
 
         Returns
@@ -240,7 +240,7 @@ class Storage:
 
         Parameters
         ----------
-        path : str
+        path
             The storage path.
 
         Returns
@@ -258,9 +258,9 @@ class Storage:
 
         Parameters
         ----------
-        path : str
+        path
             The storage path.
-        path_local : str (path)
+        path_local
             The local path at which the JSON file will be stored.
         pretty
             A boolean that determines if the data should be formatted for readability.

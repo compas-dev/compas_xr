@@ -2,7 +2,9 @@
   {
     "version": "1.0.0",
     "title": "1.0.0 (stable) (legacy)",
-    "aliases": []
+    "aliases": [
+      "latest"
+    ]
   },
   {
     "version": "0.9.4",

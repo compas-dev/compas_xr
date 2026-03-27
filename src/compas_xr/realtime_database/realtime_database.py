@@ -1,10 +1,12 @@
 import json
 import os
 from typing import Any
-from typing import List
+from typing import Callable
 
 import pyrebase
 from compas.data import json_dumps
+
+from compas_xr._path import validate_reference_path
 
 
 class RealtimeDatabase:
@@ -30,12 +32,13 @@ class RealtimeDatabase:
     """
 
     _shared_database = None
+    _INVALID_KEY_CHARS = set(".#$[]/")
 
     def __init__(self, config_path: str):
         self.config_path = config_path
         self._ensure_database()
 
-    def _ensure_database(self):
+    def _ensure_database(self) -> None:
         """
         Ensures that the database connection is established.
         If the connection is not yet established, it initializes it.
@@ -55,81 +58,31 @@ class RealtimeDatabase:
         if not RealtimeDatabase._shared_database:
             raise Exception("Could not initialize database!")
 
-    def construct_reference(self, parentname: str) -> Any:
+    def construct_reference(self, path: str) -> pyrebase.pyrebase.Database:
         """
-        Constructs a database reference under the specified parent name.
+        Constructs a database reference from a slash-delimited path.
 
         Parameters
         ----------
-        parentname
-            The name of the parent under which the reference will be constructed.
+        path
+            A database path like "parent/child/grandchild".
 
         Returns
         -------
         pyrebase.pyrebase.Database
             The constructed database reference.
 
-        """
-        return RealtimeDatabase._shared_database.child(parentname)
-
-    def construct_child_refrence(self, parentname: str, childname: str) -> Any:
-        """
-        Constructs a database reference under the specified parent name & child name.
-
-        Parameters
-        ----------
-        parentname
-            The name of the parent under which the reference will be constructed.
-        childname
-            The name of the child under which the reference will be constructed.
-
-        Returns
-        -------
-        pyrebase.pyrebase.Database
-            The constructed database reference.
+        Raises
+        ------
+        ValueError
+            If the path is empty or contains invalid Firebase key characters.
 
         """
-        return RealtimeDatabase._shared_database.child(parentname).child(childname)
-
-    def construct_grandchild_refrence(self, parentname: str, childname: str, grandchildname: str) -> Any:
-        """
-        Constructs a database reference under the specified parent name, child name, & grandchild name.
-
-        Parameters
-        ----------
-        parentname
-            The name of the parent under which the reference will be constructed.
-        childname
-            The name of the child under which the reference will be constructed.
-        grandchildname
-            The name of the grandchild under which the reference will be constructed.
-
-        Returns
-        -------
-        pyrebase.pyrebase.Database
-            The constructed database reference.
-
-        """
-        return RealtimeDatabase._shared_database.child(parentname).child(childname).child(grandchildname)
-
-    def construct_reference_from_list(self, reference_list: List[str]) -> Any:
-        """
-        Constructs a database reference under the specified refrences in list order.
-
-        Parameters
-        ----------
-        reference_list
-            The name of the parent under which the reference will be constructed.
-
-        Returns
-        -------
-        pyrebase.pyrebase.Database
-            The constructed database reference.
-
-        """
+        self._ensure_database()
+        parts = validate_reference_path(path, invalid_chars=RealtimeDatabase._INVALID_KEY_CHARS)
         reference = RealtimeDatabase._shared_database
-        for ref in reference_list:
-            reference = reference.child(ref)
+        for part in parts:
+            reference = reference.child(part)
         return reference
 
     def delete_data_from_reference(self, database_reference: pyrebase.pyrebase.Database) -> None:
@@ -166,10 +119,30 @@ class RealtimeDatabase:
         data_dict = dict(data)
         return data_dict
 
-    def stream_data_from_reference(self, callback, database_reference):
+    def stream_data_from_reference(self, callback: Callable, database_reference: pyrebase.pyrebase.Database) -> Any:
         raise NotImplementedError("Function Under Developement")
 
-    def upload_data_to_reference(self, data: Any, database_reference: pyrebase.pyrebase.Database):
+    def stream_data(self, path: str, callback: Callable) -> Any:
+        """
+        Streams data from the Firebase Realtime Database at the specified path.
+
+        Parameters
+        ----------
+        path
+            The path from which data should be streamed.
+        callback
+            Callback used by the stream client.
+
+        Returns
+        -------
+        Any
+            Stream handle/object returned by the underlying implementation.
+
+        """
+        database_reference = self.construct_reference(path)
+        return self.stream_data_from_reference(callback, database_reference)
+
+    def upload_data_to_reference(self, data: Any, database_reference: pyrebase.pyrebase.Database) -> None:
         """
         Method for uploading data to a constructed database reference.
 
@@ -180,88 +153,66 @@ class RealtimeDatabase:
         database_reference
             Reference to the database location where the data will be uploaded.
 
+        Returns
+        -------
+        None
         """
         self._ensure_database()
-        # TODO: Check if this is stupid... it provides the functionality of making it work with compas objects and consistency across both child classes
+        # Convert COMPAS/complex objects into plain JSON-compatible Python structures.
+        # Firebase set() expects dict/list/str/int/float/bool/None payloads.
         json_string = json_dumps(data)
         database_reference.set(json.loads(json_string))
 
-    def upload_data(self, data: Any, reference_name: str) -> None:
+    def upload_data(self, data: Any, path: str) -> None:
         """
-        Uploads data to the Firebase Realtime Database under specified reference name.
+        Uploads data to the Firebase Realtime Database at the specified path.
 
         Parameters
         ----------
         data
             The data to be uploaded, needs to be JSON serializable.
-        reference_name
-            The name of the reference under which the data will be stored.
+        path
+            The path under which the data will be stored.
+
+        Returns
+        -------
+        None
 
         """
-        database_reference = self.construct_reference(reference_name)
+        database_reference = self.construct_reference(path)
         self.upload_data_to_reference(data, database_reference)
 
-    def upload_data_to_reference_as_child(
-        self,
-        data: Any,
-        reference_name: str,
-        child_name: str,
-    ) -> None:
+    def upload_data_from_file(self, path_local: str, path: str) -> None:
         """
-        Uploads data to the Firebase Realtime Database under specified reference name & child name.
-
-        Parameters
-        ----------
-        data
-            The data to be uploaded, needs to be JSON serializable.
-        reference_name
-            The name of the reference under which the child should exist.
-        child_name
-            The name of the reference under which the data will be stored.
-        """
-        database_reference = self.construct_child_refrence(reference_name, child_name)
-        self.upload_data_to_reference(data, database_reference)
-
-    def upload_data_to_deep_reference(self, data: Any, reference_list: list[str]) -> None:
-        """
-        Uploads data to the Firebase Realtime Database under specified reference names in list order.
-
-        Parameters
-        ----------
-        data
-            The data to be uploaded, needs to be JSON serializable.
-        reference_list
-            The names in sequence order in which the data should be nested for upload.
-        """
-        database_reference = self.construct_reference_from_list(reference_list)
-        self.upload_data_to_reference(data, database_reference)
-
-    def upload_data_from_file(self, path_local: str, reference_name: str) -> None:
-        """
-        Uploads data to the Firebase Realtime Database under specified reference name from a file.
+        Uploads data to the Firebase Realtime Database at the specified path from a file.
 
         Parameters
         ----------
         path_local
             The local path in which the data is stored as a json file.
-        reference_name
-            The name of the reference under which the data will be stored.
+        path
+            The path under which the data will be stored.
+
+        Returns
+        -------
+        None
+
         """
         if not os.path.exists(path_local):
             raise Exception("path does not exist {}".format(path_local))
         with open(path_local) as config_file:
             data = json.load(config_file)
-        database_reference = self.construct_reference(reference_name)
+        database_reference = self.construct_reference(path)
         self.upload_data_to_reference(data, database_reference)
 
-    def get_data(self, reference_name: str) -> dict:
+    def get_data(self, path: str) -> dict:
         """
-        Retrieves data from the Firebase Realtime Database under the specified reference name.
+        Retrieves data from the Firebase Realtime Database at the specified path.
 
         Parameters
         ----------
-        reference_name
-            The name of the reference under which the data is stored.
+        path
+            The path under which the data is stored.
 
         Returns
         -------
@@ -269,80 +220,22 @@ class RealtimeDatabase:
             The retrieved data in dictionary format.
 
         """
-        database_reference = self.construct_reference(reference_name)
+        database_reference = self.construct_reference(path)
         return self.get_data_from_reference(database_reference)
 
-    def get_data_from_child_reference(self, reference_name: str, child_name: str) -> dict:
+    def delete_data(self, path: str) -> None:
         """
-        Retreives data from the Firebase Realtime Database under specified reference name & child name.
+        Deletes data from the Firebase Realtime Database at the specified path.
 
         Parameters
         ----------
-        reference_name
-            The name of the reference under which the child exists.
-        child_name
-            The name of the reference under which the data is stored.
+        path
+            The path that should be deleted.
 
         Returns
         -------
-        dict
-            The retrieved data in dictionary format.
+        None
 
         """
-        database_reference = self.construct_child_refrence(reference_name, child_name)
-        return self.get_data_from_reference(database_reference)
-
-    def get_data_from_deep_reference(self, reference_list: list[str]) -> dict:
-        """
-        Retreives data from the Firebase Realtime Database under specified reference names in list order.
-
-        Parameters
-        ----------
-        reference_list
-            The names in sequence order in which the is nested.
-
-        Returns
-        -------
-        dict
-            The retrieved data in dictionary format.
-        """
-        database_reference = self.construct_reference_from_list(reference_list)
-        return self.get_data_from_reference(database_reference)
-
-    def delete_data(self, reference_name: str) -> None:
-        """
-        Deletes data from the Firebase Realtime Database under specified reference name.
-
-        Parameters
-        ----------
-        reference_name
-            The name of the reference under which the child should exist.
-        """
-        database_reference = self.construct_reference(reference_name)
-        self.delete_data_from_reference(database_reference)
-
-    def delete_data_from_child_reference(self, reference_name: str, child_name: str) -> None:
-        """
-        Deletes data from the Firebase Realtime Database under specified reference name & child name.
-
-        Parameters
-        ----------
-        reference_name
-            The name of the reference under which the child should exist.
-        child_name
-            The name of the reference under which the data will be stored.
-        """
-        database_reference = self.construct_child_refrence(reference_name, child_name)
-        self.delete_data_from_reference(database_reference)
-
-    def delete_data_from_deep_reference(self, reference_list: list[str]):
-        """
-        Deletes data from the Firebase Realtime Database under specified reference names in list order.
-
-        Parameters
-        ----------
-        reference_list
-            The names in sequence order in which the data should be nested for upload.
-        """
-        database_reference = self.construct_reference_from_list(reference_list)
+        database_reference = self.construct_reference(path)
         self.delete_data_from_reference(database_reference)

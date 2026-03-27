@@ -1,17 +1,17 @@
 [
   {
-    "name": "Latest",
     "version": "latest",
-    "url": "https://compas.dev/compas_xr/latest/"
+    "title": "Latest (legacy)",
+    "aliases": []
   },
   {
-    "name": "1.0.0 (stable)",
     "version": "1.0.0",
-    "url": "https://compas.dev/compas_xr/1.0.0/"
+    "title": "1.0.0 (stable) (legacy)",
+    "aliases": []
   },
   {
-    "name": "0.9.4",
     "version": "0.9.4",
-    "url": "https://compas.dev/compas_xr/0.9.4/"
+    "title": "0.9.4 (legacy)",
+    "aliases": []
   }
 ]

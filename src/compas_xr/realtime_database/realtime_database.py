@@ -158,7 +158,8 @@ class RealtimeDatabase:
         None
         """
         self._ensure_database()
-        # TODO: Check if this is stupid... it provides the functionality of making it work with compas objects and consistency across both child classes
+        # Convert COMPAS/complex objects into plain JSON-compatible Python structures.
+        # Firebase set() expects dict/list/str/int/float/bool/None payloads.
         json_string = json_dumps(data)
         database_reference.set(json.loads(json_string))
 

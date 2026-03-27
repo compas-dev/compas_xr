@@ -1,9 +1,12 @@
-def normalize_path(path):
+from typing import Union
+
+
+def normalize_path(path: Union[str, list[str], tuple[str, ...]]) -> str:
     """Normalize a slash-delimited cloud path.
 
     Parameters
     ----------
-    path : str | list[str] | tuple[str]
+    path
         Path as a slash-delimited string or as path segments.
 
     Returns
@@ -29,7 +32,7 @@ def normalize_path(path):
     return "/".join(parts)
 
 
-def path_to_parts(path):
+def path_to_parts(path: Union[str, list[str], tuple[str, ...]]) -> list[str]:
     """Convert a path string or path parts to normalized path segments."""
     normalized = normalize_path(path)
     if not normalized:
@@ -37,14 +40,14 @@ def path_to_parts(path):
     return normalized.split("/")
 
 
-def validate_reference_parts(parts, invalid_chars=None):
+def validate_reference_parts(parts: Union[list[str], tuple[str, ...]], invalid_chars: Union[set[str], None] = None) -> None:
     """Validate normalized path segments for cloud references.
 
     Parameters
     ----------
-    parts : list[str] | tuple[str]
+    parts
         Normalized path segments.
-    invalid_chars : set[str] | None, optional
+    invalid_chars
         Characters that are not allowed in each path segment.
 
     Returns
@@ -67,14 +70,14 @@ def validate_reference_parts(parts, invalid_chars=None):
             raise ValueError("invalid path segment '{}': contains control characters".format(part))
 
 
-def validate_reference_path(path, invalid_chars=None):
+def validate_reference_path(path: Union[str, list[str], tuple[str, ...]], invalid_chars: Union[set[str], None] = None) -> list[str]:
     """Normalize and validate a cloud reference path.
 
     Parameters
     ----------
-    path : str | list[str] | tuple[str]
+    path
         Path as a slash-delimited string or as path segments.
-    invalid_chars : set[str] | None, optional
+    invalid_chars
         Characters that are not allowed in each path segment.
 
     Returns

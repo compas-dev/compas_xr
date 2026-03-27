@@ -1,7 +1,7 @@
 attrs >=17.4
 black >=22.12.0
 bump-my-version
-compas_invocations2>1
+compas_invocations2[mkdocs]>1
 invoke >=0.14
 pytest
 pythonnet

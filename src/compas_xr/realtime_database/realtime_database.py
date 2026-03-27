@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from typing import Any
 from typing import Callable
 
@@ -36,6 +37,7 @@ class RealtimeDatabase:
 
     def __init__(self, config_path: str):
         self.config_path = config_path
+        self._active_streams = {}
         self._ensure_database()
 
     def _ensure_database(self) -> None:
@@ -119,8 +121,71 @@ class RealtimeDatabase:
         data_dict = dict(data)
         return data_dict
 
+    @staticmethod
+    def normalize_stream_message(message: Any) -> dict:
+        """Normalize a Firebase stream message to a predictable payload.
+
+        Parameters
+        ----------
+        message : Any
+            Raw stream message from pyrebase.
+
+        Returns
+        -------
+        dict
+            Dictionary with keys: ``event``, ``path``, ``data``, ``message``.
+
+        """
+        if isinstance(message, dict):
+            return {
+                "event": message.get("event"),
+                "path": message.get("path"),
+                "data": message.get("data"),
+                "message": message,
+            }
+
+        return {
+            "event": getattr(message, "event", None),
+            "path": getattr(message, "path", None),
+            "data": getattr(message, "data", None),
+            "message": message,
+        }
+
+    @staticmethod
+    def default_stream_callback(message: dict) -> None:
+        """Default callback for quickly inspecting stream events."""
+        print("Event: {}".format(message.get("event")))
+        print("Path: {}".format(message.get("path")))
+        print("Data: {}".format(message.get("data")))
+        print("Message: {}".format(message.get("message")))
+        print("-" * 40)
+
     def stream_data_from_reference(self, callback: Callable, database_reference: pyrebase.pyrebase.Database) -> Any:
-        raise NotImplementedError("Function Under Developement")
+        """Stream data from a previously constructed database reference.
+
+        Parameters
+        ----------
+        callback : callable
+            Callable that accepts one normalized message dictionary.
+        database_reference : pyrebase.pyrebase.Database
+            Database reference to stream from.
+
+        Returns
+        -------
+        Any
+            Stream object returned by pyrebase.
+
+        """
+        self._ensure_database()
+
+        def wrapped_callback(raw_message):
+            callback(self.normalize_stream_message(raw_message))
+
+        stream = database_reference.stream(wrapped_callback)
+        stream_id = str(uuid.uuid4())
+        self._active_streams[stream_id] = stream
+        setattr(stream, "_stream_id", stream_id)
+        return stream
 
     def stream_data(self, path: str, callback: Callable) -> Any:
         """
@@ -141,6 +206,24 @@ class RealtimeDatabase:
         """
         database_reference = self.construct_reference(path)
         return self.stream_data_from_reference(callback, database_reference)
+
+    def close_stream(self, stream_id: str) -> bool:
+        """Close one active stream by its stream id."""
+        stream = self._active_streams.get(stream_id)
+        if not stream:
+            return False
+
+        stream.close()
+        del self._active_streams[stream_id]
+        return True
+
+    def close_all_streams(self) -> int:
+        """Close all active streams and return the number closed."""
+        count = len(self._active_streams)
+        for stream in list(self._active_streams.values()):
+            stream.close()
+        self._active_streams.clear()
+        return count
 
     def upload_data_to_reference(self, data: Any, database_reference: pyrebase.pyrebase.Database) -> None:
         """
